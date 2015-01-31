@@ -14,9 +14,9 @@ function Environment(envVar) {
     this.SERVER_ENV = envVar;
 }
 
-Environment.DEV = 'DEV';
-Environment.TEST = 'TEST';
-Environment.PROD = 'PROD';
+Environment.DEV = 'dev';
+Environment.TEST = 'test';
+Environment.PROD = 'prod';
 
 Environment.ENVS = Lazy([
     Environment.DEV
@@ -28,7 +28,7 @@ Environment.CLIENT_ENV = 'ENV_NODE_ENV';
 
 Environment.prototype.getCurrentEnvironment = function getCurrentEnvironment() {
     var res;
-    if (process && process.env && Environment.ENVS.contains(process.env[this.SERVER_ENV])) {
+    if (process && process.env && Environment.ENVS.contains(process.env[this.SERVER_ENV].toLowerCase())) {
         res = process.env[this.SERVER_ENV];
     } else if (Environment.ENVS.contains(Environment.CLIENT_ENV)) {
         res = Environment.CLIENT_ENV;
