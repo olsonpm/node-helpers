@@ -29,11 +29,12 @@ Environment.CLIENT_ENV = 'ENV_NODE_ENV';
 Environment.prototype.getCurrentEnvironment = function getCurrentEnvironment() {
     var res;
     if (process && process.env && Environment.ENVS.contains(process.env[this.SERVER_ENV])) {
-        res = process.env.NODE_ENV;
+        res = process.env[this.SERVER_ENV];
     } else if (Environment.ENVS.contains(Environment.CLIENT_ENV)) {
         res = Environment.CLIENT_ENV;
     } else {
-        throw new Error("Invalid State: Environment.getCurrentEnvironment expects to be called either server-side with NODE_ENV declared, or client-side with the server replacing ENV_NODE_ENV with the proper node environment");
+        throw new Error("Invalid State: Environment.getCurrentEnvironment expects to be called either server-side with '" + this.SERVER_ENV
+            + "' declared, or client-side with the server replacing ENV_NODE_ENV with the proper node environment");
     }
 
     return res;
