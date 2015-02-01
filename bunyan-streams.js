@@ -7,25 +7,31 @@ var bunyan = require('bunyan')
     , Environment = require('./environment');
 
 
+//---------//
+// Exports //
+//---------//
+
+module.exports = bstreams;
 
 
 //-----------------//
 // Exports Helpers //
 //-----------------//
 
-exports.EnvironmentMapping[Environment.DEV] = {
+module.exports.EnvironmentMapping = {};
+module.exports.EnvironmentMapping[Environment.DEV] = {
     'level': bunyan.TRACE
     , 'formatter': localFormatter
     , 'type': 'raw'
     , 'src': true
 };
-exports.EnvironmentMapping[Environment.TEST] = {
+module.exports.EnvironmentMapping[Environment.TEST] = {
     'level': bunyan.DEBUG
     , 'formatter': testFormatter
     , 'type': 'raw'
     , 'src': false
 };
-exports.EnvironmentMapping[Environment.PROD] = {
+module.exports.EnvironmentMapping[Environment.PROD] = {
     'level': bunyan.WARN
     , 'formatter': prodFormatter
     , 'type': 'stream'
@@ -119,10 +125,3 @@ function mapLevelToName(level) {
     }
     return res;
 }
-
-
-//---------//
-// Exports //
-//---------//
-
-module.exports = bstreams;
