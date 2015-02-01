@@ -28,7 +28,10 @@ Environment.CLIENT_ENV = 'ENV_NODE_ENV';
 
 Environment.prototype.getCurrentEnvironment = function getCurrentEnvironment() {
     var res;
-    if (process && process.env && Environment.ENVS.contains(process.env[this.SERVER_ENV].toLowerCase())) {
+    if (process
+        && process.env
+        && process.env[this.SERVER_ENV]
+        && Environment.ENVS.contains(process.env[this.SERVER_ENV].toLowerCase())) {
         res = process.env[this.SERVER_ENV];
     } else if (Environment.ENVS.contains(Environment.CLIENT_ENV)) {
         res = Environment.CLIENT_ENV;
