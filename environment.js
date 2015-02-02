@@ -37,7 +37,7 @@ Environment.prototype.getCurrentEnvironment = function getCurrentEnvironment() {
         res = Environment.CLIENT_ENV;
     } else {
         throw new Error("Invalid State: Environment.getCurrentEnvironment expects to be called either server-side with '" + this.SERVER_ENV
-            + "' declared, or client-side with the server replacing ENV_NODE_ENV with the proper node environment");
+            + "' declared, or client-side with the server replacing ENV_" + "NODE_ENV with the proper node environment");
     }
 
     return res;
