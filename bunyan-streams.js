@@ -12,54 +12,60 @@ var bunyan = require('bunyan')
 //---------//
 
 module.exports = bstreams;
+module.exports.EnvironmentMapping = getEnvironmentMapping;
 
 
 //-----------------//
 // Exports Helpers //
 //-----------------//
 
-module.exports.EnvironmentMapping = {};
-module.exports.EnvironmentMapping[Environment.DEV] = {
-    'level': bunyan.TRACE
-    , 'formatter': localFormatter
-    , 'type': 'raw'
-    , 'src': true
-};
-module.exports.EnvironmentMapping[Environment.TEST] = {
-    'level': bunyan.DEBUG
-    , 'formatter': testFormatter
-    , 'type': 'raw'
-    , 'src': false
-};
-module.exports.EnvironmentMapping[Environment.PROD] = {
-    'level': bunyan.WARN
-    , 'formatter': prodFormatter
-    , 'type': 'stream'
-    , 'src': false
-};
+function getEnvironmentMapping() {
+    var res = {};
+    res[Environment.DEV] = {
+        'level': bunyan.TRACE
+        , 'formatter': localFormatter
+        , 'type': 'raw'
+        , 'src': true
+    };
+    res[Environment.TEST] = {
+        'level': bunyan.DEBUG
+        , 'formatter': testFormatter
+        , 'type': 'raw'
+        , 'src': false
+    };
+    res[Environment.PROD] = {
+        'level': bunyan.WARN
+        , 'formatter': prodFormatter
+        , 'type': 'stream'
+        , 'src': false
+    };
+
+    return res;
+}
+
 
 //-------------//
 // Helper Fxns //
 //-------------//
-
-var self = this;
 
 function bstreams(appName, env, optLevel) {
     if (!Environment.ENVS.contains(env)) {
         throw new Error("Invalid Argument: bunyan-streams expects to be given an environment string that matches one of the following " + Environment.ENVS.toArray());
     }
 
+    envMapping = getEnvironmentMapping();
+
     var logLevel = optLevel;
     // if optLevel wasn't passed, then we get the default level based on the passed environment
     if (!optLevel) {
-        logLevel = self.EnvironmentMapping[env].level;
+        logLevel = envMapping[env].level;
     }
 
-    var logType = self.EnvironmentMapping[env].type;
-    var logSrc = self.EnvironmentMapping[env].src;
+    var logType = envMapping[env].type;
+    var logSrc = envMapping[env].src;
 
     var MyStream = function() {};
-    MyStream.prototype.write = self.EnvironmentMapping[env].formatter;
+    MyStream.prototype.write = envMapping[env].formatter;
 
     return {
         stream: new MyStream()
