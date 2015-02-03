@@ -6,6 +6,7 @@ module.exports = function gsapd(global) {
     }
     return {
         DURATION: 0.4
+        , SHORT_DURATION: 0.25
         , EASE: global.Power3.easeOut
     };
 }
