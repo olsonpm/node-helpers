@@ -47,10 +47,10 @@ Environment.prototype.curEnv = Environment.prototype.getCurrentEnvironment;
 Environment.prototype.isDev = function isDev() {
     return this.getCurrentEnvironment() === Environment.DEV;
 };
-Environment.prototype.isDev = function isTest() {
+Environment.prototype.isTest = function isTest() {
     return this.getCurrentEnvironment() === Environment.TEST;
 };
-Environment.prototype.isDev = function isProd() {
+Environment.prototype.isProd = function isProd() {
     return this.getCurrentEnvironment() === Environment.PROD;
 };
 
