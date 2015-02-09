@@ -20,5 +20,9 @@
     "pg": "^4.2.0",
     "pg-native": "^1.8.0"
   },
-  "browser": "index.browser.js"
+  "browser": "index.browser.js",
+  "testConfig": {
+	  "testPropName": "testPropVal",
+	  "testPackageJsonPriority": "packageJsonVal"
+  }
 }
