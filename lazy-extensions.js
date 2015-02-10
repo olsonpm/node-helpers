@@ -67,12 +67,12 @@ Sequence.prototype.allInstanceOf = function allInstanceOf(type_) {
         throw new Error("Invalid Argument: Sequence.allInstanceOf requires a function argument");
     }
     return this.all(function(e) {
-        return (e instanceof type_);
+        return (Utils.instance_of(e, type_));
     });
 };
 
 Sequence.prototype.equals = function equals(other_, eqFn_) {
-    if (!(other_ instanceof Sequence)) {
+    if (!(Utils.instance_of(other_, Sequence))) {
         throw new Error("Invalid Argument: <Sequence>.equals requires a Sequence argument");
     } else if (this === other_) {
         return true;
@@ -141,7 +141,7 @@ ObjectLikeSequence.prototype.values = function values() {
 };
 
 ObjectLikeSequence.prototype.equals = function equals(other_, valEqFn_) {
-    if (!(other_ instanceof Sequence)) {
+    if (!(Utils.instance_of(other_, Sequence))) {
         throw new Error("Invalid Argument: <ObjectLikeSequence>.equals requires an ObjectLikeSequence argument");
     } else if (this === other_) {
         return true;

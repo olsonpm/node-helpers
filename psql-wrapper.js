@@ -1,8 +1,10 @@
 'use strict';
 
-var BPromise = require('bluebird');
+var BPromise = require('bluebird')
+    , Utils = require('./utils')
+    , pg = require('pg').native;
+
 var using = BPromise.using;
-var pg = require('pg').native;
 BPromise.promisifyAll(pg);
 
 //--------//
@@ -51,7 +53,7 @@ PGWrapper.prototype.RunParameterizedQuery = function RunParameterizedQuery(query
 
 // doesn't return anything - just throws an error if invalid
 function validatePgConf(pgConf_) {
-    if (!(pgConf_ instanceof PGConf)) {
+    if (!(Utils.instance_of(pgConf_, PGConf))) {
         throw new Error("validatePgConf requires a PGConf argument");
     }
     var err = "";
