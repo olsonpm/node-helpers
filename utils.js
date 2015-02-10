@@ -52,6 +52,15 @@ function in_array(item, arr) {
     return arr.indexOf(item) !== -1;
 }
 
+function instance_of(obj, fxn) {
+    var found = false;
+    var objProto = Object.getPrototypeOf(obj);
+    while (objProto !== null && !found) {
+        found = objProto.constructor.name === fxn.name;
+        objProto = Object.getPrototypeOf(objProto);
+    }
+    return found;
+}
 
 //---------//
 // Exports //
@@ -62,3 +71,4 @@ module.exports.bothNullOrEquals = bothNullOrEquals;
 module.exports.dateEqFn = dateEqFn;
 module.exports.normalizeEqualityFunction = normalizeEqualityFunction;
 module.exports.in_array = in_array;
+module.exports.instance_of = instance_of;
