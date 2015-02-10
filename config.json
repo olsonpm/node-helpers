@@ -1,6 +1,6 @@
 {
-	"testPropName": "testPropVal"
-	, "testEnvPriority": "defaultVal"
-	, "testDefaultPriority": "defaultVal"
-	, "testPackageJsonPriority": "defaultVal"
+    "testPropName": "testPropVal",
+    "testEnvPriority": "defaultVal",
+    "testDefaultPriority": "defaultVal",
+    "testPackageJsonPriority": "defaultVal"
 }
