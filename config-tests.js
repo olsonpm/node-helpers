@@ -54,15 +54,15 @@ suite("config.js", function() {
 
         assert.deepEqual(testConf.getValAndLocation('testPackageJsonPriority'), {
             val: 'packageJsonVal'
-            , location: 'PACKAGE'
+            , location: 'package.json'
         });
         assert.deepEqual(testConf.getValAndLocation('testEnvPriority'), {
             val: 'envVal'
-            , location: 'ENV'
+            , location: 'Environment variable'
         });
         assert.deepEqual(testConf.getValAndLocation('testDefaultPriority'), {
             val: 'defaultVal'
-            , location: 'DEFAULT'
+            , location: 'Default configuration'
         });
     });
 
