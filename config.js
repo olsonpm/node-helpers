@@ -31,8 +31,37 @@ function Config(argsObj) {
 }
 
 Config.prototype.get = function get(propName, argsObj) {
+    argsObj = argsObj || {};
+    var newArgsObj = {
+        defaultIfNone: argsObj.defaultIfNone
+        , shouldThrow: argsObj.shouldThrow
+    };
+    return this._getValAndLocation(propName, argsObj).val;
+};
+
+Config.prototype.getValAndLocation = function getPropAndLocation(propName, argsObj) {
+    argsObj = argsObj || {};
+    var newArgsObj = {
+        defaultIfNone: argsObj.defaultIfNone
+        , shouldThrow: argsObj.shouldThrow
+    };
+    return this._getValAndLocation(propName, newArgsObj);
+};
+
+Config.prototype.getFromLocation = function getFromLocation(propName, location, argsObj) {
+    argsObj = argsObj || {};
+    var newArgsObj = {
+        defaultIfNone: argsObj.defaultIfNone
+        , shouldThrow: argsObj.shouldThrow
+        , location: location
+    };
+    return this._getValAndLocation(propName, newArgsObj).val;
+};
+
+Config.prototype._getValAndLocation = function _getValAndLocation(propName, argsObj) {
     var res;
     argsObj = argsObj || {};
+    var defaultIfNone = argsObj.defaultIfNone;
     var location = argsObj.location;
     var shouldThrow = argsObj.shouldThrow;
     var curLocation;
@@ -46,11 +75,9 @@ Config.prototype.get = function get(propName, argsObj) {
                 return l.getProp(propName);
             });
 
-        if (typeof curLocation === 'undefined') {
+        if (typeof curLocation === 'undefined' && shouldThrow) {
             throw new Error("Invalid Argument: Configuration property '" + propName + "' not found in any locations");
         }
-
-        res = curLocation.getProp(propName);
     } else { // location is defined
         curLocation = Lazy(this.Locations)
             .find(function(l) {
@@ -59,14 +86,20 @@ Config.prototype.get = function get(propName, argsObj) {
         if (typeof curLocation === 'undefined') {
             throw new Error("Invalid Argument: Location '" + location + "' doesn't exist");
         }
-
-        res = curLocation.getProp(propName);
     }
 
-    if (shouldThrow && typeof res === 'undefined') {
+    res = curLocation.getProp(propName);
+
+    if (typeof res === 'undefined' && typeof defaultIfNone !== 'undefined') {
+        res = defaultIfNone;
+    } else if (typeof res === 'undefined' && shouldThrow) {
         throw new Error("Invalid Argument: Property '" + propName + "' hasn't been set");
     }
-    return res;
+
+    return {
+        location: curLocation.name
+        , val: res
+    };
 };
 
 Config.prototype.setDefault = function setDefault(propName, val) {
@@ -88,9 +121,7 @@ Config.prototype.setDefault = function setDefault(propName, val) {
 };
 
 Config.prototype.getDefault = function getDefault(propName) {
-    return this.get(propName, {
-        location: 'default'
-    });
+    return this.getFromLocation(propName, 'default');
 };
 
 Config.prototype.removeDefault = function removeDefault(propName) {
@@ -112,10 +143,6 @@ Location.prototype.getProp = function getProp(propName, shouldThrow) {
     return this.getter.call(this, propName, shouldThrow, this.getArgsObj);
 };
 
-Location.PACKAGE = 'PACKAGE';
-Location.ENV = 'ENV';
-Location.DEFAULT = 'DEFAULT';
-
 function getFromEnv(propName, shouldThrow, argsObj) {
     argsObj = argsObj || {};
 
@@ -134,15 +161,22 @@ function getFromEnv(propName, shouldThrow, argsObj) {
 function getFromPackageJson(propName, shouldThrow, argsObj) {
     argsObj = argsObj || {};
 
-    var pjson;
+    var pjson
+        , pjsonPath
+        , res;
     if (argsObj.dir.length > 0 && argsObj.dir.slice(0, 1) !== '/') {
-        pjson = require('./' + path.join(argsObj.dir, 'package.json'));
+        pjsonPath = './' + path.join(argsObj.dir, 'package.json');
     } else {
-        pjson = require(path.join(argsObj.dir, 'package.json'));
+        pjsonPath = path.join(argsObj.dir, 'package.json');
     }
-    var res = (pjson && pjson[argsObj.rootProp] && pjson[argsObj.rootProp][propName])
-        ? pjson[argsObj.rootProp][propName]
-        : undefined;
+    if (bFs.existsSync(pjsonPath)) {
+        pjson = require(pjsonPath);
+        res = (pjson[argsObj.rootProp] && pjson[argsObj.rootProp][propName])
+            ? pjson[argsObj.rootProp][propName]
+            : undefined;
+    } else {
+        res = undefined;
+    }
 
     if (shouldThrow && typeof res === 'undefined') {
         throw new Error("Invalid Argument: package.json setting '" + argsObj.rootProp + "." + propName + "' doesn't exist");
@@ -152,7 +186,9 @@ function getFromPackageJson(propName, shouldThrow, argsObj) {
 }
 
 function getFromDefault(propName, shouldThrow, argsObj) {
+    argsObj = argsObj || {};
     var configJson = {};
+
     var configPath = path.join(__dirname, argsObj.defaultConfig);
     try {
         configJson = require(configPath);
@@ -160,6 +196,7 @@ function getFromDefault(propName, shouldThrow, argsObj) {
         // config file doesn't exist
         throw new Error("No config.json file exists at '" + configPath + "'");
     }
+
     var res = configJson[propName];
     if (shouldThrow && typeof res === 'undefined') {
         throw new Error("Invalid Argument: config property '" + propName + "' doesn't exist");

@@ -2,9 +2,11 @@
 
 var Lazy = require('lazy.js').strict();
 var Sequence = Lazy.Sequence
-    , ObjectLikeSequence = Lazy.ObjectLikeSequence;
+    , ObjectLikeSequence = Lazy.ObjectLikeSequence
+    , ArrayLikeSequence = Lazy.ArrayLikeSequence;
 var Utils = require('./utils');
 var xor = Utils.xor;
+
 
 //----------//
 // Sequence //
@@ -132,6 +134,7 @@ Sequence.prototype.doWhile = Sequence.prototype.each;
 // ObjectLikeSequence //
 //--------------------//
 
+ObjectLikeSequence.prototype.constructor = ObjectLikeSequence;
 ObjectLikeSequence.prototype.keys = function keys() {
     return new KeySequence(this);
 };
@@ -175,6 +178,7 @@ function KeySequence(parent) {
 }
 
 KeySequence.prototype = new Lazy.ObjectLikeSequence();
+KeySequence.prototype.constructor = KeySequence;
 
 KeySequence.prototype.each = function each(fn) {
     return this.parent.each(function(v, k) {
@@ -216,6 +220,7 @@ function ValueSequence(parent) {
 }
 
 ValueSequence.prototype = new Lazy.ObjectLikeSequence();
+ValueSequence.prototype.constructor = ValueSequence;
 
 ValueSequence.prototype.getIterator = function getIterator() {
     return new ValueIterator(this.parent);
@@ -246,6 +251,13 @@ ValueIterator.prototype.current = function current() {
 ValueIterator.prototype.moveNext = function moveNext() {
     return this.iterator.moveNext();
 };
+
+
+//-------------------//
+// ArrayLikeSequence //
+//-------------------//
+
+ArrayLikeSequence.prototype.constructor = ArrayLikeSequence;
 
 
 //---------//
