@@ -101,7 +101,7 @@ Config.prototype._getValAndLocation = function _getValAndLocation(propName, args
         }
     }
 
-    res = curLocation.getProp(propName);
+    res = curLocation && curLocation.getProp(propName);
 
     if (typeof res === 'undefined' && typeof defaultIfNone !== 'undefined') {
         res = defaultIfNone;
@@ -207,11 +207,10 @@ function getFromDefault(propName, shouldThrow, argsObj) {
     var configJson = {};
 
     var configPath = path.join(__dirname, argsObj.defaultConfig);
-    try {
+    if (bFs.existsSync(configPath)) {
         configJson = require(configPath);
-    } catch (err) {
-        // config file doesn't exist
-        throw new Error("No config.json file exists at '" + configPath + "'");
+    } else { // config.json doesn't exist, so let's create it
+        bFs.writeFileSync(configPath, JSON.stringify({}));
     }
 
     var res = configJson[propName];
