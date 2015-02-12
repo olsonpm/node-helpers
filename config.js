@@ -37,11 +37,11 @@ Config.PACKAGE = {
 Config.ENV = {
     key: 'ENV'
     , name: 'Environment variable'
-}
+};
 Config.DEFAULT = {
     key: 'DEFAULT'
     , name: 'Default configuration'
-}
+};
 
 Config.prototype.get = function get(propName, argsObj) {
     argsObj = argsObj || {};
@@ -106,7 +106,7 @@ Config.prototype._getValAndLocation = function _getValAndLocation(propName, args
     if (typeof res === 'undefined' && typeof defaultIfNone !== 'undefined') {
         res = defaultIfNone;
         curLocation = {
-            name: 'DEFAULT'
+            name: Config.DEFAULT.name
         };
     } else if (typeof res === 'undefined' && shouldThrow) {
         throw new Error("Invalid Argument: Property '" + propName + "' hasn't been set");
