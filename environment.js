@@ -10,8 +10,8 @@ var Lazy = require('lazy.js');
 // Main //
 //------//
 
-function Environment(envVar) {
-    this.SERVER_ENV = envVar;
+function Environment(optEnvVar) {
+    this.SERVER_ENV = optEnvVar;
 }
 
 Environment.DEV = 'dev';
@@ -36,8 +36,13 @@ Environment.prototype.getCurrentEnvironment = function getCurrentEnvironment() {
     } else if (Environment.ENVS.contains(Environment.CLIENT_ENV)) {
         res = Environment.CLIENT_ENV;
     } else {
-        throw new Error("Invalid State: Environment.getCurrentEnvironment expects to be called either server-side with '" + this.SERVER_ENV
-            + "' declared, or client-side with the server replacing ENV_" + "NODE_ENV with the proper node environment");
+        if (this.SERVER_ENV) {
+            throw new Error("Invalid State: Environment.getCurrentEnvironment expects to be called either server-side with '" + this.SERVER_ENV
+                + "' declared, or client-side with the server replacing ENV_" + "NODE_ENV with the proper node environment");
+        } else {
+            throw new Error("Invalid State: Environment.getCurrentEnvironment expects to be called either server-side with an environment variable declared"
+                + " (via new Environment(envVar)), or client-side with the server replacing ENV_" + "NODE_ENV with the proper node environment");
+        }
     }
 
     return res;

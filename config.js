@@ -79,6 +79,10 @@ Config.prototype._getValAndLocation = function _getValAndLocation(propName, args
     var shouldThrow = argsObj.shouldThrow;
     var curLocation;
 
+    if (defaultIfNone && shouldThrow) {
+        throw new Error("Invalid Argument: defaultIfNone and shouldThrow cannot both be truthy");
+    }
+
     if (typeof location === 'undefined') {
         curLocation = Lazy(this.Locations)
             .sort(function(left, right) {
