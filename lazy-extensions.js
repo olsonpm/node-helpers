@@ -32,27 +32,32 @@ Sequence.prototype.rotateTo = function rotateTo(e, eqFn) {
     if (['undefined', 'string', 'function'].indexOf(typeof eqFn) !== -1) {
         self = self.rotate(-(self.indexOf(e, eqFn)));
     } else {
-        throw new Error("Invalid Argument: Sequence's rotateTo expects an undefined, string, or function type for its second parameter.");
+        throw new Error("Invalid Argument: <Sequence>.rotateTo expects an undefined, string, or function type for its second parameter.");
     }
 
     return self;
 };
 
-Sequence.prototype.indexOf = function indexOf(e_, eqFn_) {
+Sequence.prototype.indexOf = function indexOf(el, eqFn) {
     var foundIndex = -1;
 
-    var normalizedEqFn = Utils.normalizeEqualityFunction(eqFn_, "Inavlid Argument: Sequence's indexOf expects an undefined, string, or function type for its second parameter.");
+    var normalizedEqFn = Utils.normalizeEqualityFunction(eqFn, "Inavlid Argument: <Sequence>.indexOf expects an undefined, string, or function type for its second parameter.");
 
     var curIterator = this.getIterator();
     var found = false;
     while (curIterator.moveNext() && !found) {
-        found = normalizedEqFn(curIterator.current(), e_);
+        found = normalizedEqFn(curIterator.current(), el);
         if (found) {
             foundIndex = curIterator.index;
         }
     }
 
     return foundIndex;
+};
+
+Sequence.prototype.has = function has(el, eqFn) {
+    var normalizedEqFn = Utils.normalizeEqualityFunction(eqFn, "Inavlid Argument: <Sequence>.has expects an undefined, string, or function type for its second parameter.");
+    return (this.indexOf(el, normalizedEqFn) !== -1);
 };
 
 Sequence.prototype.allTypeOf = function allTypeOf(type_) {
@@ -66,7 +71,7 @@ Sequence.prototype.allTypeOf = function allTypeOf(type_) {
 
 Sequence.prototype.allInstanceOf = function allInstanceOf(type_) {
     if (typeof type_ !== 'function') {
-        throw new Error("Invalid Argument: Sequence.allInstanceOf requires a function argument");
+        throw new Error("Invalid Argument: <Sequence>.allInstanceOf requires a function argument");
     }
     return this.all(function(e) {
         return (Utils.instance_of(e, type_));
