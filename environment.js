@@ -44,14 +44,14 @@ Environment.prototype.getCurrentEnvironment = function getCurrentEnvironment() {
         res = this.hardCoded;
     } else if (process
         && process.env
-        && process.env[this.SERVER_ENV]
-        && Environment.ENVS.contains(process.env[this.SERVER_ENV].toLowerCase())) {
-        res = process.env[this.SERVER_ENV];
+        && process.env[this.serverEnv]
+        && Environment.ENVS.contains(process.env[this.serverEnv].toLowerCase())) {
+        res = process.env[this.serverEnv];
     } else if (Environment.ENVS.contains(Environment.CLIENT_ENV)) {
         res = Environment.CLIENT_ENV;
     } else {
-        if (this.SERVER_ENV) {
-            throw new Error("Invalid State: None of the following cases were met\n1) A hard coded environment string is passed.\n2) Called server-side with '" + this.SERVER_ENV
+        if (this.serverEnv) {
+            throw new Error("Invalid State: None of the following cases were met\n1) A hard coded environment string is passed.\n2) Called server-side with '" + this.serverEnv
                 + "' declared.\n3) Called client-side with the server replacing ENV_" + "NODE_ENV with the proper node environment string");
         } else {
             throw new Error("Invalid State: None of the following cases were met\n1) A hard coded environment string is passed.\n2) Called server-side with an environment variable"
