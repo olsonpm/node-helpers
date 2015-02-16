@@ -15,7 +15,10 @@ function Environment(optArgs) {
     this.serverEnv = optArgs.env;
     this.hardCoded = optArgs.hardCoded;
 
-    if (Environment.ENVS.indexOf(this.hardCoded.toLowerCase()) === -1) {
+    if (this.hardCoded
+        && typeof this.hardCoded === 'string'
+        && Environment.ENVS.indexOf(this.hardCoded.toLowerCase()) === -1) {
+
         throw new Error("hardCoded environment '" + this.hardCoded + "' is not valid");
     }
     if (this.serverEnv && this.hardCoded) {
