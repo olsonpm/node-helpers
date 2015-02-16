@@ -39,12 +39,22 @@ Environment.ENVS = lazy([
 Environment.CLIENT_ENV = 'ENV_NODE_ENV';
 
 Environment.validateEnv
-function validateEnv(env) {
+
+function validateEnv(env, shouldThrow) {
+    var msg = "";
+
     if (typeof env !== 'string') {
         throw new Error("Invalid Argument: Environment.validateEnv only validates environment strings");
     }
 
-    return Environment.ENVS.has(env.toLowerCase());
+    if (!Environment.ENVS.has(env.toLowerCase())) {
+        msg = "Invalid Argument: environment string '" + env + "' is not valid.";
+        if (shouldThrow) {
+            throw new Error(msg);
+        }
+    }
+
+    return msg;
 }
 
 Environment.prototype.getCurrentEnvironment = function getCurrentEnvironment() {
