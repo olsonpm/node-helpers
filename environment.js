@@ -12,7 +12,7 @@ var lazy = require('lazy.js');
 
 function Environment(optArgs) {
     optArgs = optArgs || {};
-    this.serverEnv = optArgs.env;
+    this.serverEnv = optArgs.serverEnv;
     this.hardCoded = optArgs.hardCoded;
 
     if (this.hardCoded
