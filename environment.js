@@ -4,21 +4,30 @@
 // Imports //
 //---------//
 
-var Lazy = require('lazy.js');
+var lazy = require('lazy.js');
 
 //------//
 // Main //
 //------//
 
-function Environment(optEnvVar) {
-    this.SERVER_ENV = optEnvVar;
+function Environment(optArgs) {
+    optArgs = optArgs || {};
+    this.serverEnv = optArgs.env;
+    this.hardCoded = optArgs.hardCoded;
+
+    if (Environment.ENVS.indexOf(this.hardCoded.toLowerCase()) === -1) {
+        throw new Error("hardCoded environment '" + this.hardCoded + "' is not valid");
+    }
+    if (this.serverEnv && this.hardCoded) {
+        throw new Error("Environment doesn't expect both serverEnv and hardCoded to be passed");
+    }
 }
 
 Environment.DEV = 'dev';
 Environment.TEST = 'test';
 Environment.PROD = 'prod';
 
-Environment.ENVS = Lazy([
+Environment.ENVS = lazy([
     Environment.DEV
     , Environment.TEST
     , Environment.PROD
@@ -28,7 +37,9 @@ Environment.CLIENT_ENV = 'ENV_NODE_ENV';
 
 Environment.prototype.getCurrentEnvironment = function getCurrentEnvironment() {
     var res;
-    if (process
+    if (this.hardCoded) {
+        res = this.hardCoded;
+    } else if (process
         && process.env
         && process.env[this.SERVER_ENV]
         && Environment.ENVS.contains(process.env[this.SERVER_ENV].toLowerCase())) {
@@ -37,11 +48,11 @@ Environment.prototype.getCurrentEnvironment = function getCurrentEnvironment() {
         res = Environment.CLIENT_ENV;
     } else {
         if (this.SERVER_ENV) {
-            throw new Error("Invalid State: Environment.getCurrentEnvironment expects to be called either server-side with '" + this.SERVER_ENV
-                + "' declared, or client-side with the server replacing ENV_" + "NODE_ENV with the proper node environment");
+            throw new Error("Invalid State: None of the following cases were met\n1) A hard coded environment string is passed.\n2) Called server-side with '" + this.SERVER_ENV
+                + "' declared.\n3) Called client-side with the server replacing ENV_" + "NODE_ENV with the proper node environment string");
         } else {
-            throw new Error("Invalid State: Environment.getCurrentEnvironment expects to be called either server-side with an environment variable declared"
-                + " (via new Environment(envVar)), or client-side with the server replacing ENV_" + "NODE_ENV with the proper node environment");
+            throw new Error("Invalid State: None of the following cases were met\n1) A hard coded environment string is passed.\n2) Called server-side with an environment variable"
+                + " declared.\n3) Called client-side with the server replacing ENV_" + "NODE_ENV with the proper node environment string");
         }
     }
 
