@@ -13,6 +13,7 @@
     "bunyan": "^1.3.3",
     "chai": "^1.10.0",
     "component-xor": "0.0.3",
+    "fs-bluebird": "^0.1.2",
     "lazy.js": "^0.4.0",
     "mocha": "^2.1.0",
     "mocha-clean": "^0.4.0",
@@ -22,7 +23,7 @@
   },
   "browser": "index.browser.js",
   "testConfig": {
-	  "testPropName": "testPropVal",
-	  "testPackageJsonPriority": "packageJsonVal"
+    "testPropName": "testPropVal",
+    "testPackageJsonPriority": "packageJsonVal"
   }
 }
