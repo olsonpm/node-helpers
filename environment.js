@@ -38,9 +38,7 @@ Environment.ENVS = lazy([
 
 Environment.CLIENT_ENV = 'ENV_NODE_ENV';
 
-Environment.validateEnv
-
-function validateEnv(env, shouldThrow) {
+Environment.validateEnv = function validateEnv(env, shouldThrow) {
     var msg = "";
 
     if (typeof env !== 'string') {
@@ -55,7 +53,7 @@ function validateEnv(env, shouldThrow) {
     }
 
     return msg;
-}
+};
 
 Environment.prototype.getCurrentEnvironment = function getCurrentEnvironment() {
     var res;
