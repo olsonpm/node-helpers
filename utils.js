@@ -53,6 +53,10 @@ function in_array(item, arr) {
 }
 
 function instance_of(obj, fxn) {
+    if (typeof obj !== 'object') {
+        return false;
+    }
+
     var found = false;
     var objProto = Object.getPrototypeOf(obj);
     while (objProto !== null && !found) {
