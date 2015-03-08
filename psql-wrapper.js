@@ -45,6 +45,9 @@ PGWrapper.prototype.RunParameterizedQuery = function RunParameterizedQuery(query
         return conn_.queryAsync(queryConf);
     });
 };
+PGWrapper.prototype.RunQuery = function RunQuery(queryText_) {
+    return this.RunParameterizedQuery(queryText_);
+};
 
 
 //-------------//
