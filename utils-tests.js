@@ -59,4 +59,11 @@ suite("utils.js", function() {
         assert.isTrue(Utils.instance_of(wChild, WildChild));
         assert.isFalse(Utils.instance_of(wChild, Parent));
     });
+
+    test("is_numeric", function is_numeric() {
+        assert.isTrue(Utils.isNumeric(1));
+        assert.isTrue(Utils.isNumeric("1"));
+        assert.isFalse(Utils.isNumeric(Infinity));
+        assert.isFalse(Utils.isNumeric(Math.PI));
+    });
 });

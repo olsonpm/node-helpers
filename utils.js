@@ -66,6 +66,10 @@ function instance_of(obj, fxn) {
     return found;
 }
 
+function isNumeric(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
 //---------//
 // Exports //
 //---------//
@@ -76,3 +80,4 @@ module.exports.dateEqFn = dateEqFn;
 module.exports.normalizeEqualityFunction = normalizeEqualityFunction;
 module.exports.in_array = in_array;
 module.exports.instance_of = instance_of;
+module.exports.isNumeric = isNumeric;

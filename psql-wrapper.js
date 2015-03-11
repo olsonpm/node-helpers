@@ -21,19 +21,24 @@ function PGConf(user_, database_, password_, port_, host_, ssl_) {
     validatePgConf(this);
 }
 PGConf.prototype.GeneratePGWrapper = function GeneratePGWrapper() {
-    return new PGWrapper(this);
+    return (new PGWrapper(this));
 };
 
 
-//-----------//
-// PGWrapper //
-//-----------//
+//-------------//
+// Constructor //
+//-------------//
 
 function PGWrapper(curPgConf_) {
     validatePgConf(curPgConf_);
     this.curPgConf = curPgConf_;
-
 }
+
+
+//-----------------------//
+// Prototyped Extensions //
+//-----------------------//
+
 PGWrapper.prototype.RunParameterizedQuery = function RunParameterizedQuery(queryText_, queryValues_) {
     return using(getPostgresConnection(this.curPgConf), function(conn_) {
         var queryConf = {
@@ -45,6 +50,7 @@ PGWrapper.prototype.RunParameterizedQuery = function RunParameterizedQuery(query
         return conn_.queryAsync(queryConf);
     });
 };
+
 PGWrapper.prototype.RunQuery = function RunQuery(queryText_) {
     return this.RunParameterizedQuery(queryText_);
 };
