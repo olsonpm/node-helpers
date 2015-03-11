@@ -134,6 +134,13 @@ Sequence.equals = function static_equals(left_, right_, eqFn_) {
 
 Sequence.prototype.doWhile = Sequence.prototype.each;
 
+Sequence.prototype.mustFind = function mustFind(predicate) {
+    var res = this.find(predicate);
+    if (typeof res === 'undefined') {
+        throw new Error("Invalid Argument: <Sequence>.mustFind did not find any matching elements");
+    }
+    return res;
+};
 
 //--------------------//
 // ObjectLikeSequence //

@@ -122,6 +122,18 @@ suite("lazy-extensions.js", function() {
         assert.isTrue(objs.equals(objsConst, TestObj.equals));
     });
 
+    test("Sequence.mustFind", function Sequence_mustFind() {
+        assert.strictEqual(vals.mustFind(function(aVal) {
+            return aVal === 1;
+        }), valsConst.toArray()[0]);
+
+        assert.throws(function() {
+            vals.mustFind(function(aVal) {
+                return aVal === 10;
+            })
+        });
+    });
+
     test("ObjectLikeSequence.keys", function ObjectLikeSequence_keys() {
         assert.isTrue(objLit.keys().equals(objLitConst.keys()));
         objLit = objLit.assign({
