@@ -70,6 +70,20 @@ function isNumeric(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
+function repeatString(str, count) {
+    if (typeof str !== 'string' || isNaN(count)) {
+        throw new Error("Invalid Argument: Utils.repeatString requires a typeof string followed by a number argument");
+    }
+
+    if (count < 1) return '';
+    var result = '';
+    while (count > 1) {
+        if (count & 1) result += str;
+        count >>= 1, str += str;
+    }
+    return result + str;
+}
+
 //---------//
 // Exports //
 //---------//
@@ -81,3 +95,4 @@ module.exports.normalizeEqualityFunction = normalizeEqualityFunction;
 module.exports.in_array = in_array;
 module.exports.instance_of = instance_of;
 module.exports.isNumeric = isNumeric;
+module.exports.repeatString = repeatString;

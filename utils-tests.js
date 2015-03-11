@@ -64,6 +64,14 @@ suite("utils.js", function() {
         assert.isTrue(Utils.isNumeric(1));
         assert.isTrue(Utils.isNumeric("1"));
         assert.isFalse(Utils.isNumeric(Infinity));
-        assert.isFalse(Utils.isNumeric(Math.PI));
+    });
+
+    test("repeat_string", function repeat_string() {
+        assert.strictEqual(Utils.repeatString("a", 0), "");
+        assert.strictEqual(Utils.repeatString("a", 1), "a");
+        assert.strictEqual(Utils.repeatString("a", 5), "aaaaa");
+        assert.throws(function() {
+            Utils.repeatString(1, "ok");
+        })
     });
 });
