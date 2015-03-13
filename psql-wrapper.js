@@ -116,7 +116,9 @@ function getPostgresConnection(pgConf_) {
         close = done;
         return client;
     }).disposer(function(client) {
-        if (close) close(client);
+        if (close) {
+            close();
+        }
     });
 }
 
