@@ -60,6 +60,8 @@ Sequence.prototype.has = function has(el, eqFn) {
     return (this.indexOf(el, normalizedEqFn) !== -1);
 };
 
+Sequence.prototype.any = Sequence.prototype.has;
+
 Sequence.prototype.allTypeOf = function allTypeOf(type_) {
     if (typeof type_ !== 'string') {
         throw new Error("Invalid Argument: <Sequence>.allTypeOf requires a string argument");
