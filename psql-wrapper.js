@@ -55,6 +55,10 @@ PGWrapper.prototype.RunQuery = function RunQuery(queryText_) {
     return this.RunParameterizedQuery(queryText_);
 };
 
+PGWrapper.prototype.end = function end() {
+    return pg.end();
+};
+
 
 //-------------//
 // Helper Fxns //
