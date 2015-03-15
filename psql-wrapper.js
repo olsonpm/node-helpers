@@ -11,15 +11,27 @@ BPromise.promisifyAll(pg);
 // PGConf //
 //--------//
 
-function PGConf(user_, database_, password_, port_, host_, ssl_) {
-    this.user = user_;
-    this.database = database_;
-    this.password = password_;
-    this.port = port_;
-    this.host = host_;
-    this.ssl = ssl_;
+function PGConf(argsObj) {
+    argsObj = argsObj || {};
+    var confObj = {};
+
+    confObj.user = argsObj.user;
+    confObj.database = argsObj.database;
+    confObj.password = argsObj.password;
+    confObj.port = argsObj.port;
+    confObj.host = argsObj.host;
+    confObj.ssl = argsObj.ssl;
+    this.confObj = confObj;
+
+    this.connString = argsObj.connString;
+
     validatePgConf(this);
 }
+
+PGConf.prototype.GetConnection = function GetConnection() {
+    return this.connString || this.confObj;
+}
+
 PGConf.prototype.GeneratePGWrapper = function GeneratePGWrapper() {
     return (new PGWrapper(this));
 };
@@ -40,7 +52,7 @@ function PGWrapper(curPgConf_) {
 //-----------------------//
 
 PGWrapper.prototype.RunParameterizedQuery = function RunParameterizedQuery(queryText_, queryValues_) {
-    return using(getPostgresConnection(this.curPgConf), function(conn_) {
+    return using(getPostgresConnection(this.curPgConf.GetConnection()), function(conn_) {
         var queryConf = {
             text: queryText_
         };
@@ -66,37 +78,46 @@ PGWrapper.prototype.end = function end() {
 
 // doesn't return anything - just throws an error if invalid
 function validatePgConf(pgConf_) {
+    if (!Utils.xor(Object.keys(pgConf_.confObj).length, pgConf_.connString)) {
+        throw new Error("Invalid Argument: PGConf requires _either_ connString _or_ separate configuration arguments to be passed");
+    }
+
+    // parsing the string is unreasonable for now.  Just assume it's correct
+    if (pgConf_.connString) {
+        return;
+    }
+
     if (!(Utils.instance_of(pgConf_, PGConf))) {
         throw new Error("validatePgConf requires a PGConf argument");
     }
     var err = "";
     var errFields = [];
-    if (!pgConf_.user) {
+    if (!pgConf_.confObj.user) {
         errFields.push({
             field: 'user', reason: 'falsy'
         });
     }
-    if (!pgConf_.database) {
+    if (!pgConf_.confObj.database) {
         errFields.push({
             field: 'database', reason: 'falsy'
         });
     }
-    if (!pgConf_.password) {
+    if (!pgConf_.confObj.password) {
         errFields.push({
             field: 'password', reason: 'falsy'
         });
     }
-    if (!pgConf_.port) {
+    if (!pgConf_.confObj.port) {
         errFields.push({
             field: 'port', reason: 'falsy'
         });
     }
-    if (!pgConf_.host) {
+    if (!pgConf_.confObj.host) {
         errFields.push({
             field: 'host', reason: 'falsy'
         });
     }
-    if (isNullOrUndefined(pgConf_.ssl)) {
+    if (isNullOrUndefined(pgConf_.confObj.ssl)) {
         errFields.push({
             field: 'ssl', reason: 'null or undefined'
         });

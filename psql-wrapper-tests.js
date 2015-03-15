@@ -54,7 +54,7 @@ suite("psql-wrapper.js", function() {
         constUser1 = new Test_user(1, 'my user1', 'ok');
         constUserAddress1 = new Test_user_address(1, 'my address', 1, 'address ok');
     });
-    test("RunParameterizedQuery", function RunParameterizedQuery() {
+    test("run_parameterized_query", function run_parameterized_query() {
         var queryText = "\
 				select * \
 				from test_user \
