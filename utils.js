@@ -84,6 +84,52 @@ function repeatString(str, count) {
     return result + str;
 }
 
+function everyCombinationOf(arrayN) {
+    var argsArray = Array.prototype.slice.call(arguments);
+
+    if (argsArray.length < 2) {
+        throw new Error("Invalid Argument: Utils.everyCombinationOf requires at least two arrays");
+    }
+
+    var allArgsAreArrays = true;
+    var i = 0;
+    while (allArgsAreArrays && i < argsArray.length) {
+        var curArg = argsArray[0];
+        if (!instance_of(curArg, Array)) {
+            allArgsAreArrays = false;
+        }
+        i += 1;
+    };
+    if (!allArgsAreArrays) {
+        throw new Error("Invalid Argument: Utils.everyCombinationOf requires all arguments to be instance_of Array");
+    }
+
+    var res = []
+        , oldRes = [];
+
+    argsArray.forEach(function(anArray, i) {
+        if (oldRes.length) {
+            oldRes.forEach(function(key) {
+                anArray.forEach(function(aVal) {
+                    res.push(key.concat(aVal));
+                });
+            });
+        } else {
+            anArray.forEach(function(aVal) {
+                res.push([aVal]);
+            });
+        }
+
+        if (i < argsArray.length - 1) {
+            oldRes = res;
+            res = [];
+        }
+    });
+
+    return res;
+}
+
+
 //---------//
 // Exports //
 //---------//
@@ -96,3 +142,4 @@ module.exports.in_array = in_array;
 module.exports.instance_of = instance_of;
 module.exports.isNumeric = isNumeric;
 module.exports.repeatString = repeatString;
+module.exports.everyCombinationOf = everyCombinationOf;
