@@ -16,7 +16,7 @@ var bPromise = require('bluebird')
 function BRequest() {
     var self = this;
 
-    self.my = {
+    var my = {
         BaseUrl: null
         , IsJSONRequest: null
     };
@@ -111,7 +111,7 @@ BRequest.prototype.get = function get(opts) {
 BRequest.prototype._transmit = function _transmit(opts) {
     var self = this;
 
-    var xhr = new
+    var xhr = new XMLHttpRequest();
     var method = opts.method;
     var url = opts.url;
     var data = opts.data || null;
@@ -125,8 +125,6 @@ BRequest.prototype._transmit = function _transmit(opts) {
 
         this.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     }
-
-    mdethod = method
 
     var res = new bPromise(function(resolve, reject) {
         self.xhr.addEventListener("error", reject);
@@ -149,11 +147,11 @@ BRequest.prototype._getUrl = function _getUrl(url) {
         res = url;
     } else {
         var burl = S(this.BaseUrl()).ensureRight('/');
-        var url = S(url).chompLeft('/');
+        url = S(url).chompLeft('/');
         res = burl.s + url.s;
     }
     return res;
-}
+};
 
 
 //---------//
