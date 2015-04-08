@@ -19,7 +19,8 @@
     "mocha-clean": "^0.4.0",
     "moment": "^2.9.0",
     "pg": "^4.2.0",
-    "pg-native": "^1.8.0"
+    "pg-native": "^1.8.0",
+    "string": "^3.1.1"
   },
   "browser": "index.browser.js",
   "testConfig": {
