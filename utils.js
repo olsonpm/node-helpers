@@ -1,6 +1,15 @@
 'use strict';
 
+//---------//
+// Imports //
+//---------//
+
 var xor = require('component-xor');
+
+
+//------//
+// Main //
+//------//
 
 function bothNullOrEquals(left_, right_, eqFn_) {
     var normalizedEqFn = normalizeEqualityFunction(eqFn_, "Invalid Argument: bothNullOrEquals requires an undefined, string, or function argument");
