@@ -9,13 +9,12 @@ var bPromise = require('bluebird')
     , utils = require('./utils');
 
 
-//------//
+//-------//
 // Model //
-//------//
+//-------//
 
-function BXMLHttpRequest() {
+function BRequest() {
     var self = this;
-    self.xhr = new XMLHttpRequest;
 
     self.my = {
         BaseUrl: null
@@ -26,7 +25,7 @@ function BXMLHttpRequest() {
         var res = my.BaseUrl;
         if (arguments.length > 0) {
             if (baseurl_ !== null) {
-                BXMLHttpRequest.ValidateBaseUrl(baseurl_, true);
+                BRequest.ValidateBaseUrl(baseurl_, true);
             }
             my.BaseUrl = baseurl_;
             res = self;
@@ -38,7 +37,7 @@ function BXMLHttpRequest() {
         var res = my.IsJSON;
         if (arguments.length > 0) {
             if (isjson_ !== null) {
-                BXMLHttpRequest.ValidateIsJSON(isjson_, true);
+                BRequest.ValidateIsJSON(isjson_, true);
             }
             my.IsJSON = isjson_;
             res = self;
@@ -52,10 +51,10 @@ function BXMLHttpRequest() {
 // Validation //
 //------------//
 
-BXMLHttpRequest.ValidateBaseUrl = function ValidateBaseUrl(input, throwErr) {
+BRequest.ValidateBaseUrl = function ValidateBaseUrl(input, throwErr) {
     var msg = '';
     if (typeof input !== 'string') {
-        msg = 'Invalid Argument: <BXMLHttpRequest>.ValidateBaseUrl requires a typeof string argument';
+        msg = 'Invalid Argument: <BRequest>.ValidateBaseUrl requires a typeof string argument';
     }
 
     if (throwErr && msg) {
@@ -65,9 +64,9 @@ BXMLHttpRequest.ValidateBaseUrl = function ValidateBaseUrl(input, throwErr) {
     return msg;
 };
 
-BXMLHttpRequest.ValidateIsJSON = function ValidateIsJSON(input, throwErr) {
+BRequest.ValidateIsJSON = function ValidateIsJSON(input, throwErr) {
     var msg = '';
-    var errMsg = 'Invalid Argument: <BXMLHttpRequest>.ValidateIsJSON requires a typeof boolean argument or string equal to "true" or "false"';
+    var errMsg = 'Invalid Argument: <BRequest>.ValidateIsJSON requires a typeof boolean argument or string equal to "true" or "false"';
 
     if (typeof input === 'string') {
         input = input.toLowerCase();
@@ -93,24 +92,41 @@ BXMLHttpRequest.ValidateIsJSON = function ValidateIsJSON(input, throwErr) {
 // Prototyped Extensions //
 //-----------------------//
 
-BXMLHttpRequest.prototype.open = function open(method, url) {
-    this.xhr.open("GET", this._getUrl(url));
-    if (this.IsJSON()) {
-        this.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+BRequest.prototype.get = function get(opts) {
+    var url = opts.url;
+    if (!url || (typeof url !== 'string')) {
+        throw new Error("Invalid Argument: <BRequest>.get requires a string url");
     }
+
+    return this._transmit({
+        method: 'GET', url: this._getUrl(url)
+    });
 };
-BXMLHttpRequest.prototype.setRequestHeader = function setRequestHeader(header, value) {
-    this.xhr.setRequestHeader(header, value);
-};
-BXMLHttpRequest.prototype.send = function send(data) {
+
+
+//-------------------------------//
+// Private Prototyped Extensions //
+//-------------------------------//
+
+BRequest.prototype._transmit = function _transmit(opts) {
     var self = this;
+
+    var xhr = new
+    var method = opts.method;
+    var url = opts.url;
+    var data = opts.data || null;
+
     if (this.IsJSON()) {
         if (typeof data === 'object') {
             data = JSON.stringify(data);
         } else if ((typeof data === 'string' && !isJson(data)) || typeof data !== 'string') {
-            throw new Error("Invalid Argument: <BXMLHttpRequest>.send requires data to be valid JSON when the IsJSON property is true");
+            throw new Error("Invalid Argument: <BRequest>.send requires data to be valid JSON when the IsJSON property is true");
         }
+
+        this.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     }
+
+    mdethod = method
 
     var res = new bPromise(function(resolve, reject) {
         self.xhr.addEventListener("error", reject);
@@ -127,6 +143,18 @@ BXMLHttpRequest.prototype.send = function send(data) {
     return res;
 };
 
+BRequest.prototype._getUrl = function _getUrl(url) {
+    var res;
+    if (this.BaseUrl() === null) {
+        res = url;
+    } else {
+        var burl = S(this.BaseUrl()).ensureRight('/');
+        var url = S(url).chompLeft('/');
+        res = burl.s + url.s;
+    }
+    return res;
+}
+
 
 //---------//
 // Helpers //
@@ -142,25 +170,8 @@ function isJson(str) {
 }
 
 
-//-------------------------------//
-// Private Prototyped Extensions //
-//-------------------------------//
-
-BXMLHttpRequest.prototype._getUrl = function _getUrl(url) {
-    var res;
-    if (this.BaseUrl() === null) {
-        res = url;
-    } else {
-        var burl = S(this.BaseUrl()).ensureRight('/');
-        var url = S(url).chompLeft('/');
-        res = burl.s + url.s;
-    }
-    return res;
-}
-
-
 //---------//
 // Exports //
 //---------//
 
-module.exports = BXMLHttpRequest;
+module.exports = BRequest;
