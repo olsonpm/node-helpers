@@ -5,7 +5,7 @@
 //---------//
 
 var bPromise = require('bluebird')
-    , S = require('string.js')
+    , S = require('string')
     , utils = require('./utils');
 
 
