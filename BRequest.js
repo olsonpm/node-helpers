@@ -92,8 +92,7 @@ BRequest.ValidateIsJSON = function ValidateIsJSON(input, throwErr) {
 // Prototyped Extensions //
 //-----------------------//
 
-BRequest.prototype.get = function get(opts) {
-    var url = opts.url;
+BRequest.prototype.get = function get(url) {
     if (!url || (typeof url !== 'string')) {
         throw new Error("Invalid Argument: <BRequest>.get requires a string url");
     }
