@@ -122,7 +122,7 @@ BRequest.prototype._transmit = function _transmit(opts) {
             throw new Error("Invalid Argument: <BRequest>.send requires data to be valid JSON when the IsJSON property is true");
         }
 
-        this.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     }
 
     var res = new bPromise(function(resolve, reject) {
