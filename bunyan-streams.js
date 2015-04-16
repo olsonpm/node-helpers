@@ -34,7 +34,7 @@ function getEnvironmentMapping() {
         , 'src': false
     };
     res[Environment.PROD] = {
-        'level': bunyan.WARN
+        'level': bunyan.INFO
         , 'formatter': prodFormatter
         , 'type': 'stream'
         , 'src': false

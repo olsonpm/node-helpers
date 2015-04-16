@@ -115,25 +115,28 @@ BRequest.prototype._transmit = function _transmit(opts) {
     var url = opts.url;
     var data = opts.data || null;
 
-    if (this.IsJSON()) {
-        if (typeof data === 'object') {
-            data = JSON.stringify(data);
-        } else if ((typeof data === 'string' && !isJson(data)) || typeof data !== 'string') {
-            throw new Error("Invalid Argument: <BRequest>.send requires data to be valid JSON when the IsJSON property is true");
+    var res = new bPromise(function(resolve, reject) {
+        xhr.addEventListener("error", reject);
+        xhr.addEventListener("load", resolve);
+
+        xhr.open(method, url);
+
+        if (self.IsJSON()) {
+            if (typeof data === 'object') {
+                data = JSON.stringify(data);
+            } else if ((typeof data === 'string' && !isJson(data)) || typeof data !== 'string') {
+                throw new Error("Invalid Argument: <BRequest>.send requires data to be valid JSON when the IsJSON property is true");
+            }
+
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         }
 
-        xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    }
-
-    var res = new bPromise(function(resolve, reject) {
-        self.xhr.addEventListener("error", reject);
-        self.xhr.addEventListener("load", resolve);
-        self.xhr.send(data);
+        xhr.send(data);
     });
 
-    if (this.IsJSON()) {
-        res = res.then(function(response) {
-            return JSON.parse(response);
+    if (self.IsJSON()) {
+        res = res.then(function() {
+            return JSON.parse(xhr.response);
         });
     }
 
