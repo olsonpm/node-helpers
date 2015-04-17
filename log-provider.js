@@ -8,6 +8,7 @@ var bunyan = require('bunyan')
     , bunyanStreams = require('./bunyan-streams')
     , Utils = require('./utils')
     , Environment = require('./environment')
+    , root = require('app-root-path')
     , path = require('path');
 
 
@@ -20,7 +21,7 @@ function LogProvider() {
 
     var tmpDefaultAppName;
     if (require && require.main && require.main.filename) {
-        var rootPkgConf = require(path.join(path.dirname(require.main.filename), 'package.json'))
+        var rootPkgConf = require(path.join(root.path, 'package.json'))
         if (rootPkgConf.environment && rootPkgConf.name) {
             tmpDefaultAppName = rootPkgConf.name;
         }
@@ -96,7 +97,7 @@ function LogProvider() {
 
 LogProvider.ValidateEnvInst = function ValidateEnvInst(input, throwErr) {
     var msg = '';
-    if (Utils.instance_of(input, Environment)) {
+    if (!Utils.instance_of(input, Environment)) {
         msg = 'Invalid Argument: <LogProvider>.ValidateEnvInst requires an instance_of Environment argument';
     }
 

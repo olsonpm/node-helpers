@@ -6,6 +6,7 @@
 
 var lazy = require('./lazy-extensions')
     , Utils = require('./utils')
+    , root = require('app-root-path')
     , path = require('path');
 
 
@@ -37,7 +38,7 @@ function Environment() {
     //   to retrieve the environment variable name
     var tmpDefaultServerEnv;
     if (require && require.main && require.main.filename) {
-        var rootPkgConf = require(path.join(path.dirname(require.main.filename), 'package.json'))
+        var rootPkgConf = require(path.join(root.path, 'package.json'))
         if (rootPkgConf.environment && rootPkgConf.environment.env_var_name) {
             tmpDefaultServerEnv = rootPkgConf.environment.env_var_name;
         }
