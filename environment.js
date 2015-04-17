@@ -4,27 +4,14 @@
 // Imports //
 //---------//
 
-var lazy = require('lazy.js');
+var lazy = require('./lazy-extensions')
+    , Utils = require('./utils')
+    , path = require('path');
 
-//------//
-// Main //
-//------//
 
-function Environment(optArgs) {
-    optArgs = optArgs || {};
-    this.serverEnv = optArgs.serverEnv;
-    this.hardCoded = optArgs.hardCoded;
-
-    if (this.hardCoded
-        && typeof this.hardCoded === 'string'
-        && Environment.ENVS.indexOf(this.hardCoded.toLowerCase()) === -1) {
-
-        throw new Error("hardCoded environment '" + this.hardCoded + "' is not valid");
-    }
-    if (this.serverEnv && this.hardCoded) {
-        throw new Error("Environment doesn't expect both serverEnv and hardCoded to be passed");
-    }
-}
+//-------------------//
+// Static Properties //
+//-------------------//
 
 Environment.DEV = 'dev';
 Environment.TEST = 'test';
@@ -38,7 +25,132 @@ Environment.ENVS = lazy([
 
 Environment.CLIENT_ENV = 'ENV_NODE_ENV';
 
-Environment.validateEnv = function validateEnv(env, shouldThrow) {
+
+//------//
+// Main //
+//------//
+
+function Environment() {
+    var self = this;
+
+    // if require.main.filename is set, then find its directory and require the package.json file 
+    //   to retrieve the environment variable name
+    var tmpDefaultServerEnv;
+    if (require && require.main && require.main.filename) {
+        var rootPkgConf = require(path.join(path.dirname(require.main.filename), 'package.json'))
+        if (rootPkgConf.environment && rootPkgConf.environment.env_var_name) {
+            tmpDefaultServerEnv = rootPkgConf.environment.env_var_name;
+        }
+    }
+    tmpDefaultServerEnv = tmpDefaultServerEnv || '';
+
+    var my = {
+        HardCoded: null
+        , ServerEnv: null
+        , DefaultServerEnv: tmpDefaultServerEnv
+        , AllowDefaultServerEnv: true
+    };
+
+    self.HardCoded = function(hardcoded_) {
+        var res = my.HardCoded;
+        if (arguments.length > 0) {
+            if (hardcoded_ !== null) {
+                if (!self.AllowDefaultServerEnv() && self.ServerEnv() !== null) {
+                    throw new Error('Invalid State: When setting ValidateHardCoded, ServerEnv must equal null');
+                }
+                Environment.ValidateHardCoded(hardcoded_, true);
+            }
+            my.HardCoded = hardcoded_;
+            res = self;
+        }
+        return res;
+    };
+
+    self.ServerEnv = function(serverenv_) {
+        var res = my.ServerEnv;
+        if (arguments.length > 0) {
+            if (serverenv_ !== null) {
+                if (self.HardCoded()) {
+                    throw new Error('Invalid State: When setting ValidateServerEnv, HardCoded must equal null');
+                }
+                Environment.ValidateServerEnv(serverenv_, true);
+            }
+            my.ServerEnv = serverenv_;
+            res = self;
+        } else if (self.AllowDefaultServerEnv()) {
+            res = res || my.DefaultServerEnv;
+        }
+        return res;
+    };
+
+    self.AllowDefaultServerEnv = function(allowdefaultserverenv_) {
+        var res = my.AllowDefaultServerEnv;
+        if (arguments.length > 0) {
+            if (allowdefaultserverenv_ !== null) {
+                Environment.ValidateAllowDefaultServerEnv(allowdefaultserverenv_, true);
+            }
+            my.AllowDefaultServerEnv = allowdefaultserverenv_;
+            res = self;
+        }
+        return res;
+    };
+}
+
+
+//------------//
+// Validation //
+//------------//
+
+Environment.ValidateHardCoded = function ValidateHardCoded(input, throwErr) {
+    var msg = '';
+
+    if (typeof input !== 'string') {
+        msg = 'Invalid Argument: <Environment>.ValidateHardCoded requires a typeof string argument';
+    } else {
+        msg = Environment.ValidateEnv(input, throwErr);
+    }
+
+    if (throwErr && msg) {
+        throw new Error(msg);
+    }
+
+    return msg;
+};
+
+Environment.ValidateServerEnv = function ValidateServerEnv(input, throwErr) {
+    var msg = '';
+
+    if (typeof input !== 'string') {
+        msg = 'Invalid Argument: <Environment>.ValidateServerEnv requires a typeof string';
+    } else if (!process
+        || !process.env
+        || typeof process.env[input] === 'undefined'
+        || Environment.ValidateEnv(process.env[input])) {
+
+        msg = "Invalid Argument: process.env." + input + " is undefined.  <Environment>.ValidateServerEnv requires an existing environment variable name";
+    }
+
+    if (throwErr && msg) {
+        throw new Error(msg);
+    }
+
+    return msg;
+};
+
+Environment.ValidateAllowDefaultServerEnv = function ValidateAllowDefaultServerEnv(input, throwErr) {
+    var msg = '';
+    if (typeof input !== 'boolean') {
+        msg = 'Invalid Argument: <Environment>.ValidateAllowDefaultServerEnv requires a typeof boolean argument';
+    }
+
+    if (throwErr && msg) {
+        throw new Error(msg);
+    }
+
+    return msg;
+};
+
+Environment.ValidateEnv = function ValidateEnv(env, throwErr) {
     var msg = "";
 
     if (typeof env !== 'string') {
@@ -46,34 +158,39 @@ Environment.validateEnv = function validateEnv(env, shouldThrow) {
     }
 
     if (!Environment.ENVS.has(env.toLowerCase())) {
-        msg = "Invalid Argument: environment string '" + env + "' is not valid.";
-        if (shouldThrow) {
-            throw new Error(msg);
-        }
+        msg = "Invalid Argument: environment '" + env + "' doesn't match one of the following " + Environment.ENVS.toArray();
+    }
+
+    if (throwErr && msg) {
+        throw new Error(msg);
     }
 
     return msg;
 };
 
+
+//-----------------------//
+// Prototyped Extensions //
+//-----------------------//
+
 Environment.prototype.getCurrentEnvironment = function getCurrentEnvironment() {
+    this._validateState();
+
     var res;
+
     if (this.hardCoded) {
-        res = this.hardCoded;
+        res = this.HardCoded();
     } else if (process
         && process.env
-        && process.env[this.serverEnv]
-        && Environment.ENVS.contains(process.env[this.serverEnv].toLowerCase())) {
-        res = process.env[this.serverEnv];
+        && process.env[this.ServerEnv()]
+        && Environment.ENVS.contains(process.env[this.ServerEnv()].toLowerCase())) {
+        res = process.env[this.ServerEnv()];
     } else if (Environment.ENVS.contains(Environment.CLIENT_ENV)) {
         res = Environment.CLIENT_ENV;
-    } else {
-        if (this.serverEnv) {
-            throw new Error("Invalid State: None of the following cases were met\n1) A hard coded environment string is passed.\n2) Called server-side with '" + this.serverEnv
-                + "' declared.\n3) Called client-side with the server replacing ENV_" + "NODE_ENV with the proper node environment string");
-        } else {
-            throw new Error("Invalid State: None of the following cases were met\n1) A hard coded environment string is passed.\n2) Called server-side with an environment variable"
-                + " declared.\n3) Called client-side with the server replacing ENV_" + "NODE_ENV with the proper node environment string");
-        }
+    }
+
+    if (!Environment.ENVS.contains(res.toLowerCase())) {
+        throw new Error('Invalid State: Somehow the state has changed between validation and accessing the environment variable.  This check should be unnecessary');
     }
 
     return res;
@@ -88,6 +205,22 @@ Environment.prototype.isTest = function isTest() {
 };
 Environment.prototype.isProd = function isProd() {
     return this.getCurrentEnvironment() === Environment.PROD;
+};
+
+
+//-------------------------------//
+// Private Prototyped Extensions //
+//-------------------------------//
+
+Environment.prototype._validateState = function _validateState() {
+    // invalid if default server environment isn't allowed, and neither hardCoded nor ServerEnv are set
+    if (this.HardCoded() === null
+        && this.ServerEnv() === null
+        && !Environment.ENVS.contains(Environment.CLIENT_ENV)) {
+
+        throw new Error("Invalid State: None of the following cases were met\n1) A hard coded environment string is passed.\n2) Called server-side with an environment variable"
+            + "(specified by ServerEnv()) declared.\n3) Called client-side with the server replacing ENV_" + "NODE_ENV with the proper node environment string");
+    }
 };
 
 

@@ -7,17 +7,34 @@ var bunyan = require('bunyan')
     , Environment = require('./environment');
 
 
-//---------//
-// Exports //
-//---------//
+//------//
+// Main //
+//------//
 
-module.exports = bstreams;
-module.exports.EnvironmentMapping = getEnvironmentMapping;
+function bstreams(appName, env, optLevel) {
+    Environment.ValidateEnv(env, true);
 
+    envMapping = getEnvironmentMapping();
 
-//-----------------//
-// Exports Helpers //
-//-----------------//
+    var logLevel = optLevel;
+    // if optLevel wasn't passed, then we get the default level based on the passed environment
+    if (!optLevel) {
+        logLevel = envMapping[env].level;
+    }
+
+    var logType = envMapping[env].type;
+    var logSrc = envMapping[env].src;
+
+    var MyStream = function() {};
+    MyStream.prototype.write = envMapping[env].formatter;
+
+    return {
+        stream: new MyStream()
+        , level: logLevel
+        , type: logType
+        , source: logSrc
+    };
+}
 
 function getEnvironmentMapping() {
     var res = {};
@@ -47,33 +64,6 @@ function getEnvironmentMapping() {
 //-------------//
 // Helper Fxns //
 //-------------//
-
-function bstreams(appName, env, optLevel) {
-    if (!Environment.ENVS.contains(env)) {
-        throw new Error("Invalid Argument: bunyan-streams expects to be given an environment string that matches one of the following " + Environment.ENVS.toArray());
-    }
-
-    envMapping = getEnvironmentMapping();
-
-    var logLevel = optLevel;
-    // if optLevel wasn't passed, then we get the default level based on the passed environment
-    if (!optLevel) {
-        logLevel = envMapping[env].level;
-    }
-
-    var logType = envMapping[env].type;
-    var logSrc = envMapping[env].src;
-
-    var MyStream = function() {};
-    MyStream.prototype.write = envMapping[env].formatter;
-
-    return {
-        stream: new MyStream()
-        , level: logLevel
-        , type: logType
-        , source: logSrc
-    };
-}
 
 function localFormatter(rec) {
     if (rec.level >= bunyan.WARN) {
@@ -131,3 +121,11 @@ function mapLevelToName(level) {
     }
     return res;
 }
+
+
+//---------//
+// Exports //
+//---------//
+
+module.exports = bstreams;
+module.exports.EnvironmentMapping = getEnvironmentMapping();

@@ -52,7 +52,7 @@ Config.prototype.get = function get(propName, argsObj) {
     return this._getValAndLocation(propName, argsObj).val;
 };
 
-Config.prototype.getValAndLocation = function getPropAndLocation(propName, argsObj) {
+Config.prototype.getValAndLocation = function getValAndLocation(propName, argsObj) {
     argsObj = argsObj || {};
     var newArgsObj = {
         defaultIfNone: argsObj.defaultIfNone
