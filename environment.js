@@ -155,7 +155,7 @@ Environment.ValidateEnv = function ValidateEnv(env, throwErr) {
     var msg = "";
 
     if (typeof env !== 'string') {
-        throw new Error("Invalid Argument: Environment.validateEnv only validates environment strings");
+        throw new Error("Invalid Argument: Environment.ValidateEnv only validates environment strings");
     }
 
     if (!Environment.ENVS.has(env.toLowerCase())) {
