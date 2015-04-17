@@ -62,7 +62,7 @@ function in_array(item, arr) {
 }
 
 function instance_of(obj, fxn) {
-    if (typeof obj !== 'object') {
+    if (typeof obj !== 'object' || obj === null) {
         return false;
     }
 
