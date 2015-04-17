@@ -190,7 +190,7 @@ Environment.prototype.getCurrentEnvironment = function getCurrentEnvironment() {
         res = Environment.CLIENT_ENV;
     }
 
-    if (!Environment.ENVS.contains(res.toLowerCase())) {
+    if (!res || !Environment.ENVS.contains(res.toLowerCase())) {
         throw new Error('Invalid State: Somehow the state has changed between validation and accessing the environment variable.  This check should be unnecessary');
     }
 
