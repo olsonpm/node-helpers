@@ -105,15 +105,6 @@ PGWrapper.prototype.end = function end() {
 // doesn't return anything - just throws an error if invalid
 PGConf.validatePgConf = function validatePgConf(pgConf_) {
     if (!Utils.xor(Object.keys(pgConf_.confObj).length, pgConf_.connString)) {
-        log.debug('Object.keys(pgConf_.confObj).length');
-        log.debug(Object.keys(pgConf_.confObj).length);
-        Object.keys(pgConf_.confObj).forEach(function(aKey) {
-            log.debug('key/val');
-            log.debug(aKey + '/' + pgConf_.confObj[aKey]);
-        });
-        log.debug(Object.keys(pgConf_.confObj).length);
-        log.debug('pgConf_.connString');
-        log.debug(pgConf_.connString);
         throw new Error("Invalid Argument: PGConf requires _either_ connString _or_ separate configuration arguments to be passed");
     }
 
