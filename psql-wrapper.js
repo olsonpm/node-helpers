@@ -41,7 +41,7 @@ function PGConf(argsObj) {
         confObj.password = argsObj.password;
     }
     if (argsObj.port) {
-        confObj.password = argsObj.password;
+        confObj.port = argsObj.port;
     }
     if (argsObj.host) {
         confObj.host = argsObj.host;
