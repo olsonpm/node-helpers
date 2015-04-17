@@ -1,11 +1,27 @@
 'use strict';
 
+
+//---------//
+// Imports //
+//---------//
+
 var BPromise = require('bluebird')
     , Utils = require('./utils')
-    , pg = require('pg').native;
+    , pg = require('pg').native
+    , LogProvider = require('./log-provider')
+    , Environment = require('./environment');
+
+
+//------//
+// Init //
+//------//
 
 var using = BPromise.using;
 BPromise.promisifyAll(pg);
+var log = new LogProvider()
+    .EnvInst(new Environment)
+    .getLogger();
+
 
 //--------//
 // PGConf //
@@ -25,7 +41,7 @@ function PGConf(argsObj) {
 
     this.connString = argsObj.connString;
 
-    validatePgConf(this);
+    PGConf.validatePgConf(this);
 }
 
 PGConf.prototype.GetConnection = function GetConnection() {
@@ -42,7 +58,7 @@ PGConf.prototype.GeneratePGWrapper = function GeneratePGWrapper() {
 //-------------//
 
 function PGWrapper(curPgConf_) {
-    validatePgConf(curPgConf_);
+    PGConf.validatePgConf(curPgConf_);
     this.curPgConf = curPgConf_;
 }
 
@@ -77,8 +93,17 @@ PGWrapper.prototype.end = function end() {
 //-------------//
 
 // doesn't return anything - just throws an error if invalid
-function validatePgConf(pgConf_) {
+PGConf.validatePgConf = function validatePgConf(pgConf_) {
     if (!Utils.xor(Object.keys(pgConf_.confObj).length, pgConf_.connString)) {
+        log.debug('Object.keys(pgConf_.confObj).length');
+        log.debug(Object.keys(pgConf_.confObj).length);
+        Object.keys(pgConf_.confObj).forEach(function(aKey) {
+            log.debug('key/val');
+            log.debug(aKey + '/' + pgConf_.confObj[aKey]);
+        });
+        log.debug(Object.keys(pgConf_.confObj).length);
+        log.debug('pgConf_.connString');
+        log.debug(pgConf_.connString);
         throw new Error("Invalid Argument: PGConf requires _either_ connString _or_ separate configuration arguments to be passed");
     }
 
@@ -129,7 +154,7 @@ function validatePgConf(pgConf_) {
         });
         throw new Error("Invalid Arguments: The following fields were invalid" + fieldReasons);
     }
-}
+};
 
 function isNullOrUndefined(prop_) {
     return (typeof prop_ === 'undefined' || prop_ === null);
