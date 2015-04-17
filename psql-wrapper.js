@@ -18,9 +18,7 @@ var BPromise = require('bluebird')
 
 var using = BPromise.using;
 BPromise.promisifyAll(pg);
-var log = new LogProvider()
-    .EnvInst(new Environment)
-    .getLogger();
+var log = new LogProvider().getLogger();
 
 
 //--------//
