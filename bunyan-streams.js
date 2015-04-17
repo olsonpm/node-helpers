@@ -67,7 +67,7 @@ function getEnvironmentMapping() {
 
 function localFormatter(rec) {
     if (rec.level >= bunyan.WARN) {
-        console.log('Time: %s\n App: %s\n Level: %s\n Message: %s\n Source\n   File: %s\n   Line: %s\n   Fxn: %s'
+        console.log('Time: %s\n App: %s\n Level: %s\n Message: %s\n Source\n   File: %s\n   Line: %s\n   Fxn: %s\n'
             , moment(rec.time).format('HH:mm:ss.SS')
             , rec.name
             , mapLevelToName(rec.level)
@@ -85,7 +85,7 @@ function localFormatter(rec) {
 }
 
 function testFormatter(rec) {
-    console.log('Time: %s\n App: %s\n Level: %s\n Message: %s'
+    console.log('Time: %s\n App: %s\n Level: %s\n Message: %s\n'
         , moment(rec.time).format('HH:mm:ss.SS')
         , rec.name
         , mapLevelToName(rec.level)
