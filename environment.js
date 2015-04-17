@@ -179,7 +179,7 @@ Environment.prototype.getCurrentEnvironment = function getCurrentEnvironment() {
 
     var res;
 
-    if (this.hardCoded) {
+    if (this.HardCoded()) {
         res = this.HardCoded();
     } else if (process
         && process.env
@@ -214,7 +214,7 @@ Environment.prototype.isProd = function isProd() {
 //-------------------------------//
 
 Environment.prototype._validateState = function _validateState() {
-    // invalid if default server environment isn't allowed, and neither hardCoded nor ServerEnv are set
+    // invalid if default server environment isn't allowed, and neither HardCoded nor ServerEnv are set
     if (this.HardCoded() === null
         && this.ServerEnv() === null
         && !Environment.ENVS.contains(Environment.CLIENT_ENV)) {
