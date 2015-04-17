@@ -31,14 +31,26 @@ function PGConf(argsObj) {
     argsObj = argsObj || {};
     var confObj = {};
 
-    confObj.user = argsObj.user;
-    confObj.database = argsObj.database;
-    confObj.password = argsObj.password;
-    confObj.port = argsObj.port;
-    confObj.host = argsObj.host;
-    confObj.ssl = argsObj.ssl;
-    this.confObj = confObj;
+    if (argsObj.user) {
+        confObj.user = argsObj.user;
+    }
+    if (argsObj.database) {
+        confObj.database = argsObj.database;
+    }
+    if (argsObj.password) {
+        confObj.password = argsObj.password;
+    }
+    if (argsObj.port) {
+        confObj.password = argsObj.password;
+    }
+    if (argsObj.host) {
+        confObj.host = argsObj.host;
+    }
+    if (argsObj.ssl) {
+        confObj.ssl = argsObj.ssl;
+    }
 
+    this.confObj = confObj;
     this.connString = argsObj.connString;
 
     PGConf.validatePgConf(this);
