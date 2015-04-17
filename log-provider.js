@@ -8,7 +8,6 @@ var bunyan = require('bunyan')
     , bunyanStreams = require('./bunyan-streams')
     , Utils = require('./utils')
     , Environment = require('./environment')
-    , pkginfo = require('pkginfo')
     , path = require('path');
 
 
@@ -19,13 +18,22 @@ var bunyan = require('bunyan')
 function LogProvider() {
     var self = this;
 
+    var tmpDefaultAppName;
+    if (require && require.main && require.main.filename) {
+        var rootPkgConf = require(path.join(path.dirname(require.main.filename), 'package.json'))
+        if (rootPkgConf.environment && rootPkgConf.name) {
+            tmpDefaultAppName = rootPkgConf.name;
+        }
+    }
+    tmpDefaultAppName = tmpDefaultAppName || null;
+
     var my = {
         EnvInst: null
         , AppName: null
         , AllowDefaultEnvInst: true
         , AllowDefaultAppName: true
         , DefaultEnvInst: new Environment()
-        , DefaultAppName: pkginfo(module, 'name').name
+        , DefaultAppName: tmpDefaultAppName
     };
 
     self.EnvInst = function(envinst_) {
@@ -150,7 +158,7 @@ LogProvider.prototype.getLogger = function getLogger() {
 
     var bstream = bunyanStreams(this.AppName(), this.EnvInst().curEnv());
     return bunyan.createLogger({
-        name: appName
+        name: this.AppName()
         , src: bstream.source
         , streams: [{
             level: bstream.level

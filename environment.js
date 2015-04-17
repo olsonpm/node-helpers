@@ -42,7 +42,7 @@ function Environment() {
             tmpDefaultServerEnv = rootPkgConf.environment.env_var_name;
         }
     }
-    tmpDefaultServerEnv = tmpDefaultServerEnv || '';
+    tmpDefaultServerEnv = tmpDefaultServerEnv || null;
 
     var my = {
         HardCoded: null
