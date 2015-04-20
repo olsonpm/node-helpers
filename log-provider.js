@@ -21,7 +21,7 @@ function LogProvider() {
 
     var tmpDefaultAppName;
     if (require && require.main && require.main.filename) {
-        var rootPkgConf = require(path.join(root.path, 'package.json'))
+        var rootPkgConf = require(path.join(root.path, 'package.json'));
         if (rootPkgConf.environment && rootPkgConf.name) {
             tmpDefaultAppName = rootPkgConf.name;
         }
@@ -54,7 +54,7 @@ function LogProvider() {
     self.AppName = function(appname_) {
         var res = my.AppName;
         if (arguments.length > 0) {
-            if (dataid_ !== null) {
+            if (appname_ !== null) {
                 LogProvider.ValidateAppName(appname_, true);
             }
             my.AppName = appname_;
@@ -68,7 +68,7 @@ function LogProvider() {
     self.AllowDefaultEnvInst = function(allowdefaultenvinst_) {
         var res = my.AllowDefaultEnvInst;
         if (arguments.length > 0) {
-            if (dataid_ !== null) {
+            if (allowdefaultenvinst_ !== null) {
                 LogProvider.ValidateAllowDefaultEnvInst(allowdefaultenvinst_, true);
             }
             my.AllowDefaultEnvInst = allowdefaultenvinst_;
@@ -80,7 +80,7 @@ function LogProvider() {
     self.AllowDefaultAppName = function(allowdefaultappname_) {
         var res = my.AllowDefaultAppName;
         if (arguments.length > 0) {
-            if (dataid_ !== null) {
+            if (allowdefaultappname_ !== null) {
                 LogProvider.ValidateAllowDefaultAppName(allowdefaultappname_, true);
             }
             my.AllowDefaultAppName = allowdefaultappname_;
@@ -121,7 +121,7 @@ LogProvider.ValidateAppName = function ValidateAppName(input, throwErr) {
     return msg;
 };
 
-LogProvider.ValidateDefaultEnvInst = function ValidateDefaultEnvInst(input, throwErr) {
+LogProvider.ValidateAllowDefaultEnvInst = function ValidateAllowDefaultEnvInst(input, throwErr) {
     var msg = '';
     if (typeof input === 'boolean') {
         msg = 'Invalid Argument: <LogProvider>.ValidateDefaultEnvInst requires a typeof boolean argument';
@@ -134,7 +134,7 @@ LogProvider.ValidateDefaultEnvInst = function ValidateDefaultEnvInst(input, thro
     return msg;
 };
 
-LogProvider.ValidateDefaultAppName = function ValidateDefaultAppName(input, throwErr) {
+LogProvider.ValidateAllowDefaultAppName = function ValidateAllowDefaultAppName(input, throwErr) {
     var msg = '';
     if (typeof input === 'boolean') {
         msg = 'Invalid Argument: <LogProvider>.ValidateDefaultAppName requires a typeof boolean argument';

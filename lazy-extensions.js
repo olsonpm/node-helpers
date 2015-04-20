@@ -1,11 +1,17 @@
 'use strict';
 
-var Lazy = require('lazy.js').strict();
-var Sequence = Lazy.Sequence
-    , ObjectLikeSequence = Lazy.ObjectLikeSequence
-    , ArrayLikeSequence = Lazy.ArrayLikeSequence;
+var lazy = require('lazy.js').strict();
+var Sequence = lazy.Sequence
+    , ObjectLikeSequence = lazy.ObjectLikeSequence
+    , ArrayLikeSequence = lazy.ArrayLikeSequence
+    , AsyncSequence = lazy.AsyncSequence;
 var Utils = require('./utils');
 var xor = Utils.xor;
+
+
+//-----------------------------//
+// New Constructors come first //
+//-----------------------------//
 
 
 //----------//
@@ -128,7 +134,7 @@ Sequence.equals = function static_equals(left_, right_, eqFn_) {
     } else if (left_ === null && right_ === null) {
         res = true;
     } else { // neither left nor right are null, so we can safely pass them into the equality function
-        res = Lazy(left_).equals(Lazy(right_), eqFn_);
+        res = lazy(left_).equals(lazy(right_), eqFn_);
     }
 
     return res;
@@ -191,7 +197,7 @@ function KeySequence(parent) {
     this.parent = parent;
 }
 
-KeySequence.prototype = new Lazy.ObjectLikeSequence();
+KeySequence.prototype = new lazy.ObjectLikeSequence();
 KeySequence.prototype.constructor = KeySequence;
 
 KeySequence.prototype.each = function each(fn) {
@@ -233,7 +239,7 @@ function ValueSequence(parent) {
     this.parent = parent;
 }
 
-ValueSequence.prototype = new Lazy.ObjectLikeSequence();
+ValueSequence.prototype = new lazy.ObjectLikeSequence();
 ValueSequence.prototype.constructor = ValueSequence;
 
 ValueSequence.prototype.getIterator = function getIterator() {
@@ -274,8 +280,58 @@ ValueIterator.prototype.moveNext = function moveNext() {
 ArrayLikeSequence.prototype.constructor = ArrayLikeSequence;
 
 
+//---------------//
+// AsyncSequence //
+//---------------//
+
+AsyncSequence.prototype.constructor = AsyncSequence;
+
+AsyncSequence.prototype.setNumElementsPerAsync = function setNumElementsPerAsync(num) {
+    this.numElementsPerAsync = num;
+    return this;
+};
+
+AsyncSequence.prototype.each = function AsyncSequence_each(fn) {
+    var iterator = this.parent.getIterator(),
+        onNextCallback = this.onNextCallback,
+        cancelCallback = this.cancelCallback,
+        i = 0,
+        numElementsPerAsync = this.numElementsPerAsync || 1;
+
+    var handle = new lazy.AsyncHandle(function cancel() {
+        if (cancellationId) {
+            cancelCallback(cancellationId);
+        }
+    });
+
+    var cancellationId = onNextCallback(function iterate() {
+        cancellationId = null;
+
+        try {
+            var mn
+                , shouldContinue;
+
+            do {
+                mn = iterator.moveNext();
+                shouldContinue = fn(iterator.current(), i++) !== false;
+            } while (mn && shouldContinue && i % numElementsPerAsync !== 0);
+
+            cancellationId = onNextCallback(iterate);
+
+            if (!mn || !shouldContinue) {
+                handle._resolve();
+            }
+        } catch (e) {
+            handle._reject(e);
+        }
+    });
+
+    return handle;
+};
+
+
 //---------//
 // Exports //
 //---------//
 
-module.exports = Lazy;
+module.exports = lazy;
