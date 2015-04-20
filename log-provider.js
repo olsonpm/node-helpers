@@ -22,7 +22,7 @@ function LogProvider() {
     var tmpDefaultAppName;
     if (require && require.main && require.main.filename) {
         var rootPkgConf = require(path.join(root.path, 'package.json'));
-        if (rootPkgConf.environment && rootPkgConf.name) {
+        if (rootPkgConf.name) {
             tmpDefaultAppName = rootPkgConf.name;
         }
     }
