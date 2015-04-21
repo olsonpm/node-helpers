@@ -122,7 +122,7 @@ LogProvider.ValidateEnvInst = function ValidateEnvInst(input, throwErr) {
 
 LogProvider.ValidateAppName = function ValidateAppName(input, throwErr) {
     var msg = '';
-    if (typeof input === 'string') {
+    if (typeof input !== 'string') {
         msg = 'Invalid Argument: <LogProvider>.ValidateAppName requires a typeof string argument';
     }
 
@@ -135,7 +135,7 @@ LogProvider.ValidateAppName = function ValidateAppName(input, throwErr) {
 
 LogProvider.ValidateAllowDefaultEnvInst = function ValidateAllowDefaultEnvInst(input, throwErr) {
     var msg = '';
-    if (typeof input === 'boolean') {
+    if (typeof input !== 'boolean') {
         msg = 'Invalid Argument: <LogProvider>.ValidateDefaultEnvInst requires a typeof boolean argument';
     }
 
@@ -148,7 +148,7 @@ LogProvider.ValidateAllowDefaultEnvInst = function ValidateAllowDefaultEnvInst(i
 
 LogProvider.ValidateAllowDefaultAppName = function ValidateAllowDefaultAppName(input, throwErr) {
     var msg = '';
-    if (typeof input === 'boolean') {
+    if (typeof input !== 'boolean') {
         msg = 'Invalid Argument: <LogProvider>.ValidateDefaultAppName requires a typeof boolean argument';
     }
 

@@ -203,7 +203,7 @@ Environment.prototype.getCurrentEnvironment = function getCurrentEnvironment() {
     }
 
     if (!res || !Environment.ENVS.contains(res.toLowerCase())) {
-        throw new Error('Invalid State: Somehow the state has changed between validation and accessing the environment variable.  This check should be unnecessary');
+        throw new Error('Invalid State: No environment was found.  This could be due to relying on a non-existent default ServerEnv.');
     }
 
     return res;
