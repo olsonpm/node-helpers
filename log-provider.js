@@ -9,7 +9,8 @@ var bunyan = require('bunyan')
     , Utils = require('./utils')
     , Environment = require('./environment')
     , root = require('app-root-path')
-    , path = require('path');
+    , path = require('path')
+    , fs = require('fs');
 
 
 //------//
@@ -21,10 +22,21 @@ function LogProvider() {
 
     var tmpDefaultAppName;
     if (require && require.main && require.main.filename) {
-        var rootPkgConf = require(path.join(root.path, 'package.json'));
-        if (rootPkgConf.name) {
-            tmpDefaultAppName = rootPkgConf.name;
+        var rootPath = root.path
+            , rootPkgConf = path.join(root.path, 'package.json')
+            , found = fs.existsSync(rootPkgConf);
+        while (!found) {
+            rootPath = path.dirname(rootPath);
+            rootPkgConf = path.join(rootPath, 'package.json');
+            found = fs.existsSync(rootPkgConf);
         }
+        if (!found) {
+            throw new Error("Invalid State: No package.json files were found up the directory path starting from '" + root.path);
+        } else {
+            rootPkgConf = require(rootPkgConf);
+        }
+
+        tmpDefaultAppName = rootPkgConf.name;
     }
     tmpDefaultAppName = tmpDefaultAppName || null;
 
