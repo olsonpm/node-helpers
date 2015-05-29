@@ -17,7 +17,6 @@
     "fs-bluebird": "^0.1.2",
     "lazy.js": "^0.4.0",
     "mocha": "^2.1.0",
-    "mocha-clean": "^0.4.0",
     "moment": "^2.9.0",
     "pg": "^4.2.0",
     "pg-native": "^1.8.0",
