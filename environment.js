@@ -53,7 +53,9 @@ function Environment() {
             rootPkgConf = require(rootPkgConf);
         }
 
-        tmpDefaultServerEnv = rootPkgConf.environment.env_var_name;
+        if (rootPkgConf && rootPkgConf.environment && rootPkgConf.environment.env_var_name) {
+            tmpDefaultServerEnv = rootPkgConf.environment.env_var_name;
+        }
     }
     tmpDefaultServerEnv = tmpDefaultServerEnv || null;
 
