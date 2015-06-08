@@ -5,20 +5,17 @@
 // Imports //
 //---------//
 
-var BPromise = require('bluebird')
+var bPromise = require('bluebird')
     , Utils = require('./utils')
-    , pg = require('pg').native
-    , LogProvider = require('./log-provider')
-    , Environment = require('./environment');
+    , pg = require('pg').native;
 
 
 //------//
 // Init //
 //------//
 
-var using = BPromise.using;
-BPromise.promisifyAll(pg);
-var log = new LogProvider().getLogger();
+var using = bPromise.using;
+bPromise.promisifyAll(pg);
 
 
 //--------//
