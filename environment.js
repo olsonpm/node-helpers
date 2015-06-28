@@ -5,7 +5,7 @@
 //---------//
 
 var lazy = require('./lazy-extensions')
-    , Utils = require('./utils')
+    , Utils = require('node-utils')
     , root = require('app-root-path')
     , path = require('path')
     , fs = require('fs');

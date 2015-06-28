@@ -6,7 +6,7 @@
 
 var bunyan = require('bunyan')
     , bunyanStreams = require('./bunyan-streams')
-    , Utils = require('./utils')
+    , Utils = require('node-utils')
     , Environment = require('./environment')
     , root = require('app-root-path')
     , path = require('path')

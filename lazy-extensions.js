@@ -5,7 +5,7 @@ var Sequence = lazy.Sequence
     , ObjectLikeSequence = lazy.ObjectLikeSequence
     , ArrayLikeSequence = lazy.ArrayLikeSequence
     , AsyncSequence = lazy.AsyncSequence;
-var Utils = require('./utils');
+var Utils = require('node-utils');
 var xor = Utils.xor;
 
 
