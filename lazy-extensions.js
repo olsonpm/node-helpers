@@ -38,7 +38,7 @@ Sequence.prototype.rotateTo = function rotateTo(e, eqFn) {
     if (['undefined', 'string', 'function'].indexOf(typeof eqFn) !== -1) {
         self = self.rotate(-(self.indexOf(e, eqFn)));
     } else {
-        throw new Error("Invalid Argument: <Sequence>.rotateTo expects an undefined, string, or function type for its second parameter.");
+        throw new Error("Invalid Argument: <Sequence>.rotateTo requires an undefined, string, or function type for its second parameter.");
     }
 
     return self;
@@ -47,7 +47,7 @@ Sequence.prototype.rotateTo = function rotateTo(e, eqFn) {
 Sequence.prototype.indexOf = function indexOf(el, eqFn) {
     var foundIndex = -1;
 
-    var normalizedEqFn = Utils.normalizeEqualityFunction(eqFn, "Inavlid Argument: <Sequence>.indexOf expects an undefined, string, or function type for its second parameter.");
+    var normalizedEqFn = Utils.normalizeEqualityFunction(eqFn, "Inavlid Argument: <Sequence>.indexOf requires an undefined, string, or function type for its second parameter.");
 
     var curIterator = this.getIterator();
     var found = false;
@@ -62,7 +62,7 @@ Sequence.prototype.indexOf = function indexOf(el, eqFn) {
 };
 
 Sequence.prototype.has = function has(el, eqFn) {
-    var normalizedEqFn = Utils.normalizeEqualityFunction(eqFn, "Inavlid Argument: <Sequence>.has expects an undefined, string, or function type for its second parameter.");
+    var normalizedEqFn = Utils.normalizeEqualityFunction(eqFn, "Inavlid Argument: <Sequence>.has requires an undefined, string, or function type for its second parameter.");
     return (this.indexOf(el, normalizedEqFn) !== -1);
 };
 
@@ -83,6 +83,20 @@ Sequence.prototype.allInstanceOf = function allInstanceOf(type_) {
     }
     return this.all(function(e) {
         return (Utils.instance_of(e, type_));
+    });
+};
+
+Sequence.prototype.allInsideOf = function allInsideOf(seq, eqFn) {
+    if (Array.isArray(seq)) {
+        seq = lazy(seq);
+    } else if (!Utils.instance_of(seq, Sequence)) {
+        throw new Error("Invalid Argument: <Sequence>.allInsideOf requires an array or sequence argument");
+    }
+
+    var normalizedEqFn = Utils.normalizeEqualityFunction(eqFn, "Inavlid Argument: <Sequence>.allInsideOf requires an undefined, string, or function type for its second parameter.");
+
+    return this.every(function(item) {
+        return seq.has(item, normalizedEqFn);
     });
 };
 

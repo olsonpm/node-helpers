@@ -113,6 +113,21 @@ suite("lazy-extensions.js", function() {
         assert.isFalse(objs.allInstanceOf(TestObj));
     });
 
+    test("Sequence.allInsideOf", function Sequence_allInsideOf() {
+        assert.isFalse(objs.allInsideOf(objsConst));
+        assert.isTrue(objs.allInsideOf(objsConst, 'equals'));
+        assert.isTrue(objs.allInsideOf(objsConst, TestObj.equals));
+
+        objs = objs.concat([1]);
+        assert.isFalse(objs.allInsideOf(objsConst, 'equals'));
+        assert.isFalse(objs.allInsideOf(objsConst, TestObj.equals));
+
+        assert.isTrue(vals.allInsideOf(valsConst));
+        assert.isTrue(vals.allInsideOf([1, 2, 3, 4, 5]));
+        vals = vals.concat([6]);
+        assert.isFalse(vals.allInsideOf(valsConst));
+    });
+
     test("Sequence.equals", function Sequence_equals() {
         assert.isTrue(vals.equals(valsConst));
         var vals2 = Lazy(getNewVals()).concat([6]);
