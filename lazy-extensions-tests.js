@@ -1,7 +1,7 @@
 'use strict';
 /* --execute=mocha-- */
 
-var Lazy = require('./lazy-extensions')
+var lazy = require('./lazy-extensions')
     , chai = require('chai');
 
 var assert = chai.assert;
@@ -12,6 +12,7 @@ suite("lazy-extensions.js", function() {
         , valsConst
         , objs
         , objsConst
+        , objsSerializedConst
         , objLit
         , objLitConst;
 
@@ -22,6 +23,12 @@ suite("lazy-extensions.js", function() {
     TestObj.prototype.equals = function equals(other) {
         return this.name === other.name
             && this.val === other.val;
+    };
+    TestObj.prototype.serialize = function serialize(other) {
+        return {
+            name: this.name
+            , val: this.val
+        };
     };
     TestObj.equals = function equals(left, right) {
         return left.equals(right);
@@ -49,14 +56,30 @@ suite("lazy-extensions.js", function() {
     }
 
     setup(function() {
-        vals = Lazy(getNewVals());
-        valsConst = Lazy(getNewVals());
+        vals = lazy(getNewVals());
+        valsConst = lazy(getNewVals());
 
-        objs = Lazy(getNewObjs());
-        objsConst = Lazy(getNewObjs());
+        objs = lazy(getNewObjs());
+        objsConst = lazy(getNewObjs());
+        objsSerializedConst = [{
+            name: 'name1'
+            , val: 'val1'
+        }, {
+            name: 'name2'
+            , val: 'val2'
+        }, {
+            name: 'name3'
+            , val: 'val3'
+        }, {
+            name: 'name4'
+            , val: 'val4'
+        }, {
+            name: 'name5'
+            , val: 'val5'
+        }];
 
-        objLit = Lazy(getNewObjLit());
-        objLitConst = Lazy(getNewObjLit());
+        objLit = lazy(getNewObjLit());
+        objLitConst = lazy(getNewObjLit());
     });
     test("Sequence.indexOf", function Sequence_indexOf() {
         assert.strictEqual(vals.indexOf(1), 0);
@@ -73,11 +96,11 @@ suite("lazy-extensions.js", function() {
         assert.strictEqual(vals.first(), valsConst.last());
 
         // reset vals
-        vals = Lazy(getNewVals());
+        vals = lazy(getNewVals());
         vals = vals.rotate(2);
         assert.strictEqual(vals.first(), valsConst.get(3));
 
-        vals = Lazy(getNewVals());
+        vals = lazy(getNewVals());
         vals = vals.rotate(-2);
         assert.strictEqual(vals.first(), valsConst.get(2));
 
@@ -88,13 +111,13 @@ suite("lazy-extensions.js", function() {
         vals = vals.rotateTo(3);
         assert.strictEqual(vals.first(), valsConst.get(2));
 
-        vals = Lazy(getNewVals());
+        vals = lazy(getNewVals());
         vals = vals.rotateTo(4);
         assert.strictEqual(vals.first(), valsConst.get(3));
 
         objs = objs.rotateTo(new TestObj('name4', 'val4'), TestObj.equals);
         assert.isTrue(objs.first().equals(objsConst.get(3)));
-        objs = Lazy(getNewObjs()).rotateTo(new TestObj('name4', 'val4'), 'equals');
+        objs = lazy(getNewObjs()).rotateTo(new TestObj('name4', 'val4'), 'equals');
         assert.isTrue(objs.first().equals(objsConst.get(3)));
     });
 
@@ -128,9 +151,14 @@ suite("lazy-extensions.js", function() {
         assert.isFalse(vals.allInsideOf(valsConst));
     });
 
+    test("Sequence.allHasMethod", function Sequence_allHasMethod() {
+        assert.isTrue(objs.allHasMethod('equals'));
+        assert.isFalse(objs.allHasMethod('not_equals'));
+    });
+
     test("Sequence.equals", function Sequence_equals() {
         assert.isTrue(vals.equals(valsConst));
-        var vals2 = Lazy(getNewVals()).concat([6]);
+        var vals2 = lazy(getNewVals()).concat([6]);
         assert.isFalse(vals.equals(vals2));
         assert.isFalse(objs.equals(objsConst));
         assert.isTrue(objs.equals(objsConst, 'equals'));
@@ -221,5 +249,9 @@ suite("lazy-extensions.js", function() {
             assert.strictEqual(vit.current(), valArray[i]);
             i += 1;
         }
+    });
+
+    test("ArrayLikeSequence.serialize", function ArrayLikeSequence_serialize() {
+        assert.deepEqual(objs.serialize(), objsSerializedConst);
     });
 });

@@ -100,6 +100,12 @@ Sequence.prototype.allInsideOf = function allInsideOf(seq, eqFn) {
     });
 };
 
+Sequence.prototype.allHasMethod = function allHasMethod(methodName) {
+    return this.every(function(item) {
+        return Utils.instance_of(item, Object) && typeof item[methodName] === 'function';
+    });
+};
+
 Sequence.prototype.equals = function equals(other_, eqFn_) {
     if (!(Utils.instance_of(other_, Sequence))) {
         throw new Error("Invalid Argument: <Sequence>.equals requires a Sequence argument");
@@ -163,6 +169,7 @@ Sequence.prototype.mustFind = function mustFind(predicate) {
     }
     return res;
 };
+
 
 //--------------------//
 // ObjectLikeSequence //
@@ -292,6 +299,18 @@ ValueIterator.prototype.moveNext = function moveNext() {
 //-------------------//
 
 ArrayLikeSequence.prototype.constructor = ArrayLikeSequence;
+
+ArrayLikeSequence.prototype.serialize = function serialize() {
+    if (!this.allHasMethod('serialize')) {
+        throw new Error('Invalid State: <ArrayLikeSequence>.serialize requires all items to have the method \'serialize\'');
+    }
+
+    var res = [];
+
+    return this.map(function(item) {
+        return item.serialize();
+    }).toArray();
+};
 
 
 //---------------//
