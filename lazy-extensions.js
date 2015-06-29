@@ -86,14 +86,14 @@ Sequence.prototype.allInstanceOf = function allInstanceOf(type_) {
     });
 };
 
-Sequence.prototype.allInsideOf = function allInsideOf(seq, eqFn) {
+Sequence.prototype.allExistIn = function allExistIn(seq, eqFn) {
     if (Array.isArray(seq)) {
         seq = lazy(seq);
     } else if (!Utils.instance_of(seq, Sequence)) {
-        throw new Error("Invalid Argument: <Sequence>.allInsideOf requires an array or sequence argument");
+        throw new Error("Invalid Argument: <Sequence>.allExistIn requires an array or sequence argument");
     }
 
-    var normalizedEqFn = Utils.normalizeEqualityFunction(eqFn, "Inavlid Argument: <Sequence>.allInsideOf requires an undefined, string, or function type for its second parameter.");
+    var normalizedEqFn = Utils.normalizeEqualityFunction(eqFn, "Inavlid Argument: <Sequence>.allExistIn requires an undefined, string, or function type for its second parameter.");
 
     return this.every(function(item) {
         return seq.has(item, normalizedEqFn);

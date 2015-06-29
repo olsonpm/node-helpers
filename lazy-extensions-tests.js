@@ -136,19 +136,19 @@ suite("lazy-extensions.js", function() {
         assert.isFalse(objs.allInstanceOf(TestObj));
     });
 
-    test("Sequence.allInsideOf", function Sequence_allInsideOf() {
-        assert.isFalse(objs.allInsideOf(objsConst));
-        assert.isTrue(objs.allInsideOf(objsConst, 'equals'));
-        assert.isTrue(objs.allInsideOf(objsConst, TestObj.equals));
+    test("Sequence.allExistIn", function Sequence_allExistIn() {
+        assert.isFalse(objs.allExistIn(objsConst));
+        assert.isTrue(objs.allExistIn(objsConst, 'equals'));
+        assert.isTrue(objs.allExistIn(objsConst, TestObj.equals));
 
         objs = objs.concat([1]);
-        assert.isFalse(objs.allInsideOf(objsConst, 'equals'));
-        assert.isFalse(objs.allInsideOf(objsConst, TestObj.equals));
+        assert.isFalse(objs.allExistIn(objsConst, 'equals'));
+        assert.isFalse(objs.allExistIn(objsConst, TestObj.equals));
 
-        assert.isTrue(vals.allInsideOf(valsConst));
-        assert.isTrue(vals.allInsideOf([1, 2, 3, 4, 5]));
+        assert.isTrue(vals.allExistIn(valsConst));
+        assert.isTrue(vals.allExistIn([1, 2, 3, 4, 5]));
         vals = vals.concat([6]);
-        assert.isFalse(vals.allInsideOf(valsConst));
+        assert.isFalse(vals.allExistIn(valsConst));
     });
 
     test("Sequence.allHasMethod", function Sequence_allHasMethod() {
