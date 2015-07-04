@@ -35,8 +35,8 @@ Sequence.prototype.rotate = function rotate(n) {
 Sequence.prototype.rotateTo = function rotateTo(e, eqFn) {
     var self = this;
 
-    if (['undefined', 'string', 'function'].indexOf(typeof eqFn) !== -1) {
-        self = self.rotate(-(self.indexOf(e, eqFn)));
+    if (['undefined', 'string', 'function'].ex_indexOf(typeof eqFn) !== -1) {
+        self = self.rotate(-(self.ex_indexOf(e, eqFn)));
     } else {
         throw new Error("Invalid Argument: <Sequence>.rotateTo requires an undefined, string, or function type for its second parameter.");
     }
@@ -44,10 +44,10 @@ Sequence.prototype.rotateTo = function rotateTo(e, eqFn) {
     return self;
 };
 
-Sequence.prototype.indexOf = function indexOf(el, eqFn) {
+Sequence.prototype.ex_indexOf = function ex_indexOf(el, eqFn) {
     var foundIndex = -1;
 
-    var normalizedEqFn = Utils.normalizeEqualityFunction(eqFn, "Inavlid Argument: <Sequence>.indexOf requires an undefined, string, or function type for its second parameter.");
+    var normalizedEqFn = Utils.normalizeEqualityFunction(eqFn, "Inavlid Argument: <Sequence>.ex_indexOf requires an undefined, string, or function type for its second parameter.");
 
     var curIterator = this.getIterator();
     var found = false;
@@ -61,12 +61,13 @@ Sequence.prototype.indexOf = function indexOf(el, eqFn) {
     return foundIndex;
 };
 
-Sequence.prototype.has = function has(el, eqFn) {
-    var normalizedEqFn = Utils.normalizeEqualityFunction(eqFn, "Inavlid Argument: <Sequence>.has requires an undefined, string, or function type for its second parameter.");
-    return (this.indexOf(el, normalizedEqFn) !== -1);
+Sequence.prototype.ex_contains = function ex_contains(el, eqFn) {
+    var normalizedEqFn = Utils.normalizeEqualityFunction(eqFn, "Inavlid Argument: <Sequence>.ex_contains requires an undefined, string, or function type for its second parameter.");
+    return (this.ex_indexOf(el, normalizedEqFn) !== -1);
 };
 
-Sequence.prototype.any = Sequence.prototype.has;
+Sequence.prototype.ex_has = Sequence.prototype.ex_contains;
+Sequence.prototype.ex_any = Sequence.prototype.ex_contains;
 
 Sequence.prototype.allTypeOf = function allTypeOf(type_) {
     if (typeof type_ !== 'string') {
@@ -96,7 +97,7 @@ Sequence.prototype.allExistIn = function allExistIn(seq, eqFn) {
     var normalizedEqFn = Utils.normalizeEqualityFunction(eqFn, "Inavlid Argument: <Sequence>.allExistIn requires an undefined, string, or function type for its second parameter.");
 
     return this.every(function(item) {
-        return seq.has(item, normalizedEqFn);
+        return seq.ex_contains(item, normalizedEqFn);
     });
 };
 
