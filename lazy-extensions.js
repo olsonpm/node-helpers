@@ -35,7 +35,7 @@ Sequence.prototype.rotate = function rotate(n) {
 Sequence.prototype.rotateTo = function rotateTo(e, eqFn) {
     var self = this;
 
-    if (['undefined', 'string', 'function'].ex_indexOf(typeof eqFn) !== -1) {
+    if (['undefined', 'string', 'function'].indexOf(typeof eqFn) !== -1) {
         self = self.rotate(-(self.ex_indexOf(e, eqFn)));
     } else {
         throw new Error("Invalid Argument: <Sequence>.rotateTo requires an undefined, string, or function type for its second parameter.");

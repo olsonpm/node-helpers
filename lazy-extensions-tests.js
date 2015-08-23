@@ -30,7 +30,7 @@ suite("lazy-extensions.js", function() {
             , val: this.val
         };
     };
-    TestObj.equals = function equals(left, right) {
+    TestObj.equals = function static_equals(left, right) {
         return left.equals(right);
     };
 
@@ -81,14 +81,14 @@ suite("lazy-extensions.js", function() {
         objLit = lazy(getNewObjLit());
         objLitConst = lazy(getNewObjLit());
     });
-    test("Sequence.indexOf", function Sequence_indexOf() {
-        assert.strictEqual(vals.indexOf(1), 0);
-        assert.strictEqual(vals.indexOf(3), 2);
+    test("Sequence.ex_indexOf", function Sequence_ex_indexOf() {
+        assert.strictEqual(vals.ex_indexOf(1), 0);
+        assert.strictEqual(vals.ex_indexOf(3), 2);
 
-        assert.strictEqual(objs.indexOf(objsConst.get(0), TestObj.equals), 0);
-        assert.strictEqual(objs.indexOf(objsConst.get(0), 'equals'), 0);
-        assert.strictEqual(objs.indexOf(objsConst.get(3), TestObj.equals), 3);
-        assert.strictEqual(objs.indexOf(objsConst.get(3), 'equals'), 3);
+        assert.strictEqual(objs.ex_indexOf(objsConst.get(0), TestObj.equals), 0);
+        assert.strictEqual(objs.ex_indexOf(objsConst.get(0), 'equals'), 0);
+        assert.strictEqual(objs.ex_indexOf(objsConst.get(3), TestObj.equals), 3);
+        assert.strictEqual(objs.ex_indexOf(objsConst.get(3), 'equals'), 3);
     });
 
     test("Sequence.rotate", function Sequence_rotate() {
