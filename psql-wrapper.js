@@ -27,22 +27,22 @@ function PGConf(argsObj) {
   argsObj = argsObj || {};
   var confObj = {};
 
-  if (argsObj.user) {
+  if (typeof argsObj.user !== 'undefined') {
     confObj.user = argsObj.user;
   }
-  if (argsObj.database) {
+  if (typeof argsObj.database !== 'undefined') {
     confObj.database = argsObj.database;
   }
-  if (argsObj.password) {
+  if (typeof argsObj.password !== 'undefined') {
     confObj.password = argsObj.password;
   }
-  if (argsObj.port) {
+  if (typeof argsObj.port !== 'undefined') {
     confObj.port = argsObj.port;
   }
-  if (argsObj.host) {
+  if (typeof argsObj.host !== 'undefined') {
     confObj.host = argsObj.host;
   }
-  if (argsObj.ssl) {
+  if (typeof argsObj.ssl !== 'undefined') {
     confObj.ssl = argsObj.ssl;
   }
 
