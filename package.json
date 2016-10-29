@@ -19,7 +19,6 @@
     "mocha": "^2.1.0",
     "moment": "^2.9.0",
     "pg": "^6",
-    "pg-native": "^1.8.0",
     "string": "^3.1.1"
   },
   "browser": "index.browser.js",
